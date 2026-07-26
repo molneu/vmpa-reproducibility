@@ -33,7 +33,7 @@ All commands below should be run from the folder that contains this `README.md` 
 
 Download this file from Figshare:
 
-https://figshare.com/s/93eb2c2824a3cefdcd92
+https://figshare.com/s/f5cc8be3979e6b03b6a5
 
 ```text
 vmpa_reproducibility_input_data.tar
