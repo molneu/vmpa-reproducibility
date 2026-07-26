@@ -1,19 +1,25 @@
 # VMPA Reproducibility
 
-This repository contains the scripts and documentation needed to reproduce the VMPA manuscript figures.
+This repository contains the scripts needed to reproduce the analyses and figure panels from the VMPA manuscript.
 
-## Repository Contents
-
-- `reproducibility/figure1/` to `reproducibility/figure6/`
-- `reproducibility/supplementary_figure4/`
-- `scripts/download_figshare_data.R`: helper script for downloading Figshare-hosted files
-- `renv.lock` for restoring the analysis environment.
-
-## Data Availability
-
-The Figshare entry is currently available as a private share:
+Large input data are stored separately on Figshare:
 
 https://figshare.com/s/93eb2c2824a3cefdcd92
+
+After downloading the Figshare data, place the extracted `reproducibility/` folder contents into this repository so that each script can find its corresponding `data/` folder, for example:
+
+```text
+reproducibility/
+  figure1/
+    data/
+    scripts/
+  figure2/
+    data/
+    scripts/
+  ...
+```
+
+Generated outputs are written to `results/` folders. These folders are intentionally not tracked in Git.
 
 ## Setup
 
@@ -24,13 +30,7 @@ install.packages("renv")
 renv::restore()
 ```
 
-Download data after the Figshare URLs are added:
-
-```bash
-Rscript scripts/download_figshare_data.R
-```
-
-Run a figure script from the repository root, for example:
+Run scripts from the repository root. Examples:
 
 ```bash
 Rscript reproducibility/figure1/scripts/'Figure 1a-g.R'
@@ -49,6 +49,6 @@ Rscript reproducibility/figure6/scripts/caspase_dapi_response/generate_main_2x2_
 Rscript reproducibility/supplementary_figure4/scripts/matched_family_benchmark/paper_context_only_effect_threshold_figures.R
 ```
 
-## Suggested Citation
+## Citation
 
 Please cite our VMPA manuscript and the Figshare dataset when reusing this code or data.
