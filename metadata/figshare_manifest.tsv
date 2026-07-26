@@ -38,11 +38,6 @@ figure3	reproducibility/figure3/data/250721 Benchmarking_COMPASS_across_contexts
 figure3	reproducibility/figure3/data/250725_FIG3E_COMPARISON_fGSEA_100NULLmodels_SUMMARY.csv	TODO_FIGSHARE_FILE_URL	Precomputed null summary for Figure 3e.
 figure3	reproducibility/figure3/data/annotation_protein function.csv	TODO_FIGSHARE_FILE_URL	Protein function annotations for Figure 3c.
 figure3	reproducibility/figure3/data/annotation_protein localization.csv	TODO_FIGSHARE_FILE_URL	Protein localization annotations for Figure 3c.
-figure4	reproducibility/figure4/data/Human.GRCh38.p13.annot.tsv.gz	TODO_FIGSHARE_FILE_URL	NCBI GRCh38 gene annotation file used for Entrez-to-symbol mapping.
-figure4	reproducibility/figure4/data/GSE111571_raw_counts_GRCh38.p13_NCBI.tsv.gz	TODO_FIGSHARE_FILE_URL	GEO raw count matrix for Figure 4.
-figure4	reproducibility/figure4/data/GSE169418_raw_counts_GRCh38.p13_NCBI.tsv.gz	TODO_FIGSHARE_FILE_URL	GEO raw count matrix for Figure 4.
-figure4	reproducibility/figure4/data/GSE171163_raw_counts_GRCh38.p13_NCBI.tsv.gz	TODO_FIGSHARE_FILE_URL	GEO raw count matrix for Figure 4.
-figure4	reproducibility/figure4/data/GSE86518_raw_counts_GRCh38.p13_NCBI.tsv.gz	TODO_FIGSHARE_FILE_URL	GEO raw count matrix for Figure 4.
 figure4	reproducibility/figure4/data/drugs_U251MG_withLINCsignatures.cleaned.rds	TODO_FIGSHARE_FILE_URL	Drug signature data.
 figure4	reproducibility/figure4/data/drugs_U251MG_withLINCsignatures.gct	TODO_FIGSHARE_FILE_URL	Raw drug signature GCT file.
 figure4	reproducibility/figure4/data/metadata drugs_U251MG_withLINCsignatures.txt	TODO_FIGSHARE_FILE_URL	Drug signature metadata.

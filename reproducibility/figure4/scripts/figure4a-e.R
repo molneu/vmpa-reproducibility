@@ -173,21 +173,17 @@ for (i in seq_len(nrow(params))) {
   GSE  <- params$GSE[i]
   gsms <- params$gsms[i]
   
-  # Load raw counts downloaded from Figshare
-  count_file <- file.path(data_dir, paste0(GSE, "_raw_counts_GRCh38.p13_NCBI.tsv.gz"))
-  if (!file.exists(count_file)) {
-    stop("Missing raw count file: ", count_file)
-  }
-  counts <- data.table::fread(count_file)
+  # Load raw counts from GEO.
+  url_base <- "https://www.ncbi.nlm.nih.gov/geo/download/?format=file&type=rnaseq_counts"
+  count_url <- paste0(url_base, "&acc=", GSE,
+                      "&file=", GSE, "_raw_counts_GRCh38.p13_NCBI.tsv.gz")
+  counts <- data.table::fread(count_url)
   mat <- as.matrix(counts[ , -1, with = FALSE])
   rownames(mat) <- counts[[1]]
   
   # Load gene annotation (GRCh38) for mapping GeneIDs to symbols
-  annot_file <- file.path(data_dir, "Human.GRCh38.p13.annot.tsv.gz")
-  if (!file.exists(annot_file)) {
-    stop("Missing gene annotation file: ", annot_file)
-  }
-  annot_df <- data.table::fread(annot_file, data.table = FALSE, stringsAsFactors = FALSE)
+  annot_url <- paste0(url_base, "&file=Human.GRCh38.p13.annot.tsv.gz")
+  annot_df <- data.table::fread(annot_url, data.table = FALSE, stringsAsFactors = FALSE)
   annot_df$GeneID <- as.character(annot_df$GeneID)
   rownames(annot_df) <- annot_df$GeneID
   

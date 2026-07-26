@@ -28,11 +28,4 @@ Rscript reproducibility/supplementary_figure4/scripts/matched_family_benchmark/p
 
 ## Current Figshare Blockers
 
-The FTP upload to the private Figshare share has been run without duplicate shared files. These paths still need to be resolved before publication:
-
-- `reproducibility/figure4/data/GSE111571_raw_counts_GRCh38.p13_NCBI.tsv.gz`
-- `reproducibility/figure4/data/GSE169418_raw_counts_GRCh38.p13_NCBI.tsv.gz`
-- `reproducibility/figure4/data/GSE171163_raw_counts_GRCh38.p13_NCBI.tsv.gz`
-- `reproducibility/figure4/data/GSE86518_raw_counts_GRCh38.p13_NCBI.tsv.gz`
-
-Shared inputs such as the LINCS GCTX, `siginfo_beta.txt`, `LINC gene annotations.csv`, and `Human.GRCh38.p13.annot.tsv.gz` were uploaded once only. Reuse the same Figshare URL for duplicate manifest rows.
+No unresolved Figshare input files remain based on the current scripts. Shared inputs such as the LINCS GCTX, `siginfo_beta.txt`, `LINC gene annotations.csv`, and `Human.GRCh38.p13.annot.tsv.gz` were uploaded once only. Reuse the same Figshare URL for duplicate manifest rows.
