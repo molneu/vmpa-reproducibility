@@ -88,10 +88,9 @@ for (i in seq_len(nrow(params))) {
   
   message(">>> ", GENE, "@", GSE, " (", context, ")")
   # 1) Load & subset counts
-  path_raw <- here::here("reproducibility", "figure3", "data", paste0(GSE, "_raw_counts_GRCh38.p13_NCBI.tsv.gz"))
-  if (!file.exists(path_raw)) {
-    stop("Missing raw count file: ", path_raw)
-  }
+  url_base <- "https://www.ncbi.nlm.nih.gov/geo/download/?format=file&type=rnaseq_counts"
+  path_raw <- paste0(url_base, "&acc=", GSE,
+                     "&file=", GSE, "_raw_counts_GRCh38.p13_NCBI.tsv.gz")
   tbl <- fread(path_raw) %>%
     column_to_rownames("GeneID") %>%
     as.matrix()

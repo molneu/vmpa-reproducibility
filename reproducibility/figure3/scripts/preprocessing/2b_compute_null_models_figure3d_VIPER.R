@@ -100,11 +100,12 @@ for (i in seq_len(nrow(params))) {
   message("\n\n>>> ", GENE, " @ ", GSE, " (", context, ")")
   
   # ===== Load GEO data =====
-  count_file <- file.path(data_dir, paste0(GSE, "_raw_counts_GRCh38.p13_NCBI.tsv.gz"))
-  if (!file.exists(count_file)) {
-    stop("Missing raw count file: ", count_file)
-  }
-  tbl <- fread(count_file) %>% column_to_rownames("GeneID") %>% as.matrix()
+  raw_url <- paste0(
+    "https://www.ncbi.nlm.nih.gov/geo/download/?format=file&type=rnaseq_counts",
+    "&acc=", GSE,
+    "&file=", GSE, "_raw_counts_GRCh38.p13_NCBI.tsv.gz"
+  )
+  tbl <- fread(raw_url) %>% column_to_rownames("GeneID") %>% as.matrix()
   
   sml <- strsplit(gsms, "")[[1]]
   sel <- sml != "X"

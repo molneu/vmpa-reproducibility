@@ -30,7 +30,6 @@ Rscript reproducibility/supplementary_figure4/scripts/matched_family_benchmark/p
 
 The FTP upload to the private Figshare share has been run without duplicate shared files. These paths still need to be resolved before publication:
 
-- `reproducibility/figure3/data/geo_raw_counts.zip`
 - `reproducibility/figure4/data/GSE111571_raw_counts_GRCh38.p13_NCBI.tsv.gz`
 - `reproducibility/figure4/data/GSE169418_raw_counts_GRCh38.p13_NCBI.tsv.gz`
 - `reproducibility/figure4/data/GSE171163_raw_counts_GRCh38.p13_NCBI.tsv.gz`

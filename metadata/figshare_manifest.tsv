@@ -23,7 +23,6 @@ figure3	reproducibility/figure3/data/250717_original_annotations_Dressler_role.c
 figure3	reproducibility/figure3/data/250717_original_annotations_Dressler_status.csv	TODO_FIGSHARE_FILE_URL	Cancer-driver annotation table.
 figure3	reproducibility/figure3/data/250717_original_annotations_Kinnersley_role.csv	TODO_FIGSHARE_FILE_URL	Cancer-driver annotation table.
 figure3	reproducibility/figure3/data/Human.GRCh38.p13.annot.tsv.gz	TODO_FIGSHARE_FILE_URL	NCBI GRCh38 gene annotation file used for Entrez-to-symbol mapping.
-figure3	reproducibility/figure3/data/geo_raw_counts.zip	TODO_FIGSHARE_FILE_URL	ZIP archive containing all GSE*_raw_counts_GRCh38.p13_NCBI.tsv.gz files required by Figure 3 preprocessing scripts.
 figure3	reproducibility/figure3/data/Collectri_genesets_forfGSEA.csv	TODO_FIGSHARE_FILE_URL	Collectri gene sets.
 figure3	reproducibility/figure3/data/240918 LINC_gene sets_CRISPR_CONSENSUS_SigComLINCS_bottom_150.csv	TODO_FIGSHARE_FILE_URL	VMPA/COMPASS gene sets.
 figure3	reproducibility/figure3/data/240918 LINC_gene sets_CRISPR_CONSENSUS_SigComLINCS_bottom_200.csv	TODO_FIGSHARE_FILE_URL	VMPA/COMPASS gene sets.
