@@ -1,0 +1,40 @@
+# R
+.Rhistory
+.RData
+.RDataTmp*
+.Ruserdata
+.Rproj.user/
+.Renviron
+renv/library/
+renv/staging/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Large or generated analysis files
+data/
+results/
+*/data/
+*/results/
+
+# Design/source figure files
+*.afdesign
+*.psd
+*.ai
+
+# Logs and temporary folders
+*.log
+omnipathr-log/
+tmp/
+temp/
+archive/
