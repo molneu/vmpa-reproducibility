@@ -1,16 +1,13 @@
 # VMPA Reproducibility
 
-This repository contains the scripts and lightweight documentation needed to reproduce the analyses and figures from the VMPA manuscript.
-
-Large input data are not stored in GitHub. They should be archived on Figshare and downloaded into the expected `reproducibility/figure*/data/` folders before running the scripts. The `results/` folders are created and populated only when the scripts are run.
+This repository contains the scripts and documentation needed to reproduce the VMPA manuscript figures.
 
 ## Repository Contents
 
-- `reproducibility/figure1/` to `reproducibility/figure6/`: figure-specific analysis scripts and final figure previews.
-- `reproducibility/supplementary_figure4/`: Supplementary Figure 4 analysis script.
-- `metadata/figshare_manifest.tsv`: list of data files that should be uploaded to Figshare.
-- `scripts/download_figshare_data.R`: helper script for downloading Figshare-hosted files once the Figshare record is available.
-- `renv.lock`: R package lockfile for restoring the analysis environment.
+- `reproducibility/figure1/` to `reproducibility/figure6/`
+- `reproducibility/supplementary_figure4/`
+- `scripts/download_figshare_data.R`: helper script for downloading Figshare-hosted files
+- `renv.lock` for restoring the analysis environment.
 
 ## Data Availability
 
