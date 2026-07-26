@@ -15,14 +15,6 @@ The Figshare entry is currently available as a private share:
 
 https://figshare.com/s/93eb2c2824a3cefdcd92
 
-After the Figshare files are finalized:
-
-1. Upload the files listed in `metadata/figshare_manifest.tsv`.
-2. Replace `TODO_FIGSHARE_FILE_URL` values in the manifest with direct Figshare download URLs.
-3. Add the Figshare DOI here and in the manuscript data availability statement.
-
-Figshare DOI: `TODO_FIGSHARE_DOI`
-
 ## Setup
 
 Install R packages from the lockfile:
@@ -59,4 +51,4 @@ Rscript reproducibility/supplementary_figure4/scripts/matched_family_benchmark/p
 
 ## Suggested Citation
 
-Please cite the VMPA manuscript and the Figshare dataset when reusing this code or data.
+Please cite our VMPA manuscript and the Figshare dataset when reusing this code or data.
