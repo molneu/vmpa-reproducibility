@@ -1,8 +1,6 @@
 # Reproducibility repository for the VMPA manuscript
 
-This repository contains the scripts needed to reproduce the analyses and figure panels from the VMPA manuscript.
-
-https://figshare.com/s/93eb2c2824a3cefdcd92
+This repository contains the scripts needed to reproduce the main figures from the VMPA manuscript.
 
 When executing scripts, these will produce figure outputs to `results/` folders.
 
@@ -14,7 +12,7 @@ When executing scripts, these will produce figure outputs to `results/` folders.
 
 Option A, using Git:
 
-Open a terminal, for example Terminal on macOS or PowerShell on Windows:
+Open a terminal and execute:
 
 ```bash
 git clone https://github.com/molneu/vmpa-reproducibility.git
@@ -35,10 +33,11 @@ All commands below should be run from the folder that contains this `README.md` 
 
 Download this file from Figshare:
 
+https://figshare.com/s/93eb2c2824a3cefdcd92
+
 ```text
 vmpa_reproducibility_input_data.tar
 ```
-
 Place the downloaded file into the repository root:
 
 ```text
@@ -49,7 +48,9 @@ vmpa-reproducibility/
   reproducibility/
 ```
 
-Then extract the archive from the repository root:
+Then extract:
+
+e.g.:
 
 ```bash
 tar -xf vmpa_reproducibility_input_data.tar
@@ -57,7 +58,7 @@ tar -xf vmpa_reproducibility_input_data.tar
 
 ## Step 3: Restore the R Environment
 
-Open R or RStudio from the repository root and run:
+Open R or RStudio from the repository root and run in the R console:
 
 ```r
 install.packages("renv")
