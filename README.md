@@ -7,6 +7,7 @@ Large input data are not stored in GitHub. They should be archived on Figshare a
 ## Repository Contents
 
 - `reproducibility/figure1/` to `reproducibility/figure6/`: figure-specific analysis scripts and final figure previews.
+- `reproducibility/supplementary_figure4/`: Supplementary Figure 4 analysis script.
 - `metadata/figshare_manifest.tsv`: list of data files that should be uploaded to Figshare.
 - `scripts/download_figshare_data.R`: helper script for downloading Figshare-hosted files once the Figshare record is available.
 - `renv.lock`: R package lockfile for restoring the analysis environment.

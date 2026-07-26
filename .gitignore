@@ -1,12 +1,22 @@
 # R
 .Rhistory
+.Rapp.history
 .RData
 .RDataTmp*
 .Ruserdata
 .Rproj.user/
 .Renviron
+.httr-oauth
 renv/library/
 renv/staging/
+*.tar.gz
+*.Rcheck/
+*_cache/
+/cache/
+*.utf8.md
+*.knit.md
+docs/
+rsconnect/
 
 # Python
 __pycache__/
