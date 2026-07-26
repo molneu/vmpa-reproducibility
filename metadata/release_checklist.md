@@ -11,10 +11,11 @@
 ## Figshare
 
 1. Upload the input files listed in `metadata/figshare_manifest.tsv`.
-2. Replace every `TODO_FIGSHARE_FILE_URL` value with the direct Figshare download URL for that file.
-3. Reuse the same Figshare file URL for duplicate large files if the same input is needed at multiple relative paths.
-4. Keep the Figshare entry private until the manifest is complete.
-5. Run a fresh-clone test:
+2. Use `metadata/figshare_upload_plan.tsv` to locate the local source file for each manifest row.
+3. Replace every `TODO_FIGSHARE_FILE_URL` value with the direct Figshare download URL for that file.
+4. Reuse the same Figshare file URL for duplicate large files if the same input is needed at multiple relative paths.
+5. Keep the Figshare entry private until the manifest is complete.
+6. Run a fresh-clone test:
 
 ```bash
 Rscript scripts/download_figshare_data.R
