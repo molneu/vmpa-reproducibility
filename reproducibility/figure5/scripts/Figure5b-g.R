@@ -125,7 +125,7 @@ if (length(missing_files) > 0) {
   stop(
     "Missing Figure 5 input files in ", fig5_dir, ": ",
     paste(missing_files, collapse = ", "),
-    ". Run scripts/download_figshare_data.R after adding Figshare URLs to metadata/figshare_manifest.tsv."
+    ". Download the Figshare data and place the Figure 5 inputs in this data folder."
   )
 }
 
@@ -954,4 +954,3 @@ message(paste0("patients, n = ", paired_samples + unpaired_samples))
 message(paste0("cells, n = ", length(seurat_metadata$orig.ident)))
 message(paste0("pseudobulked clusters, n = ", n_clu))
 message(paste0("pseudobulked clusters after removing consensus cluster 7 and 4, n = ", nrow(meta_df_filtered)))
-

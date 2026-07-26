@@ -42,7 +42,7 @@ if (length(missing_files) > 0) {
   stop(
     "Missing Figure 1 input files in ", fig1_dir, ": ",
     paste(missing_files, collapse = ", "),
-    ". Run scripts/download_figshare_data.R after adding Figshare URLs to metadata/figshare_manifest.tsv."
+    ". Download the Figshare data and place the Figure 1 inputs in this data folder."
   )
 }
 
@@ -773,6 +773,5 @@ ggsave(
   device   = "pdf",
   bg       = "white"
 )
-
 
 
