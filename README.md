@@ -71,8 +71,18 @@ This installs the R package versions recorded in `renv.lock`.
 
 Run scripts from the repository root. For example, to reproduce Figure 1:
 
+in Terminal: 
+
 ```bash
+cd /path/to/vmpa-reproducibility
 Rscript reproducibility/figure1/scripts/'Figure 1a-g.R'
+```
+
+in R/Rstudio
+
+```r
+setwd("/path/to/vmpa-reproducibility")
+source("reproducibility/figure1/scripts/Figure 1a-g.R")
 ```
 
 The output files will be written to the corresponding `results/` folder.
@@ -137,8 +147,8 @@ Rscript reproducibility/supplementary_figure4/scripts/matched_family_benchmark/p
 
 ## Notes
 
-Some scripts can take a long time or require substantial memory because they use large LINCS/VMPA input matrices.
+Some scripts can take a long time to execute
 
 ## Citation
 
-Please cite the VMPA manuscript and the Figshare dataset when reusing this code or data.
+Cima I, et al. Modeling the active proteome by context-matched perturbation signatures. Manuscript in preparation.
