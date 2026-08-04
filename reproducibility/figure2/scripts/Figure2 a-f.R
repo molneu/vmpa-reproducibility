@@ -92,12 +92,12 @@ run_deseq2 <- function(counts, gsms, annot, alpha=0.05) {
 classify_hits <- function(df) {
   df %>% mutate(
     classification = case_when(
-      padj < 0.1 & NES >  1.5 & expected_NES == "pos" ~ "True Positive",
-      padj < 0.1 & NES < -1.5 & expected_NES == "neg" ~ "True Positive",
-      padj < 0.1 & NES >  1.5 & expected_NES == "neg" ~ "False Positive",
-      padj < 0.1 & NES < -1.5 & expected_NES == "pos" ~ "False Positive",
-      padj >= 0.1 | abs(NES) < 1.5                  ~ "False Negative",
-      TRUE                                          ~ "Unclassified"
+      padj < 0.1 & NES > 0 & expected_NES == "pos" ~ "True Positive",
+      padj < 0.1 & NES < 0 & expected_NES == "neg" ~ "True Positive",
+      padj < 0.1 & NES > 0 & expected_NES == "neg" ~ "False Positive",
+      padj < 0.1 & NES < 0 & expected_NES == "pos" ~ "False Positive",
+      padj >= 0.1                                  ~ "False Negative",
+      TRUE                                         ~ "Unclassified"
     )
   )
 }
@@ -270,7 +270,6 @@ for (ctx in c("NSCLC","GBM","Melanoma")) {
     geom_point(data=df0 %>% filter(classification=="True Positive"), aes(fill=context_gs), shape=21) +
     geom_point(data=df0 %>% filter(classification=="False Positive"), shape=21, fill=NA) +
     geom_point(data=df0 %>% filter(classification=="False Negative"), aes(fill=context_gs), shape=21, alpha=0.2) +
-    geom_vline(xintercept=1.5, linetype="dashed") +
     geom_hline(yintercept=-log10(0.1), linetype="dashed") +
     scale_x_continuous(limits=c(0,2.5), expand=c(0,0)) +
     scale_y_continuous(limits=c(0,5),   expand=c(0,0)) +
