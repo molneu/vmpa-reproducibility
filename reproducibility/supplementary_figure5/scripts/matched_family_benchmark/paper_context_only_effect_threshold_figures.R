@@ -1,8 +1,3 @@
-## Paper-context-only versions of the COMPASS-positive SigCom comparison figures.
-##
-## Excludes esophageal, gastric, head/neck, and histological-only breast
-## subcontexts already represented by molecular breast subgroups.
-
 required_packages <- c("readr", "dplyr", "tidyr", "ggplot2", "stringr", "forcats", "scales")
 missing_packages <- required_packages[
   !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
@@ -47,8 +42,8 @@ find_repo_root <- function(path) {
 }
 
 repo_root <- find_repo_root(script_dir)
-data_dir <- file.path(repo_root, "reproducibility", "supplementary_figure4", "data", "matched_family_benchmark")
-out_dir <- file.path(repo_root, "reproducibility", "supplementary_figure4", "results", "matched_family_benchmark")
+data_dir <- file.path(repo_root, "reproducibility", "supplementary_figure5", "data", "matched_family_benchmark")
+out_dir <- file.path(repo_root, "reproducibility", "supplementary_figure5", "results", "matched_family_benchmark")
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 excluded_contexts <- c("breast_ductal", "breast_invasive_unspecified")

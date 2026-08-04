@@ -139,10 +139,10 @@ Rscript reproducibility/figure6/scripts/apoptosis_pathway/make_compass_intrinsic
 Rscript reproducibility/figure6/scripts/caspase_dapi_response/generate_main_2x2_figures.R
 ```
 
-Supplementary Figure 4:
+Supplementary Figure 5:
 
 ```bash
-Rscript reproducibility/supplementary_figure4/scripts/matched_family_benchmark/paper_context_only_effect_threshold_figures.R
+Rscript reproducibility/supplementary_figure5/scripts/matched_family_benchmark/paper_context_only_effect_threshold_figures.R
 ```
 
 ## Notes
