@@ -17,4 +17,4 @@ reproducibility/
   ...
 ```
 
-The `data/` and `results/` folders are ignored by Git. This keeps the GitHub repository lightweight while preserving the executable analysis code.
+The `data/` and `results/` folders are ignored by Git.
