@@ -165,6 +165,13 @@ out_fname <- here::here("reproducibility", "figure6", "results",
 dir.create(dirname(out_fname), recursive = TRUE, showWarnings = FALSE)
 write.csv(tt, out_fname, row.names = TRUE)
 
+# Figure 6b STRING source data are stored under reproducibility/figure6/data.
+# "Source data_Fig6b_string_annotations.txt" contains the 35-protein STRING input and annotations.
+# "Source data_Fig6b_string_output.pdf" records the STRING v12.0 network and settings: full evidence
+# network, text mining/experiments/databases, minimum interaction score 0.400, no added interactors,
+# and disconnected nodes hidden.
+# "Source data_Fig6b_string_interactions.csv" contains the quantitative STRING interaction scores.
+
 # ====== VOLCANO PLOT ======
 # Prepare volcano plot annotations
 tt$logP <- -log10(tt$P.Value)
@@ -424,4 +431,3 @@ write.csv(
   file = here::here("reproducibility", "figure6", "results", "Source_data_CTNNB1_paired_ttest_summary.csv"),
   row.names = FALSE
 )
-

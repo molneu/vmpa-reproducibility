@@ -125,7 +125,7 @@ Rscript reproducibility/figure5/scripts/Figure5b-g.R
 Figure 6:
 
 ```bash
-Rscript reproducibility/figure6/scripts/'Fig6a,c,d.R'
+Rscript reproducibility/figure6/scripts/'figure 6a-d.R'
 Rscript reproducibility/figure6/scripts/'Fig6 dose response curves_final.R'
 Rscript reproducibility/figure6/scripts/wb_correlation/analyze_original_wb_mtor_s6_across_cell_lines.R
 Rscript reproducibility/figure6/scripts/wb_correlation/make_four_mtor_validation_scatterplots.R
