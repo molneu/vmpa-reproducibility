@@ -1,3 +1,5 @@
+## Supplementary Figure 5 was generated using the protivity package (developmental predecessor of vmpaR), pinned at commit 180be9f.
+
 required_packages <- c("readr", "dplyr", "tidyr", "ggplot2", "stringr", "forcats", "scales")
 missing_packages <- required_packages[
   !vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)
