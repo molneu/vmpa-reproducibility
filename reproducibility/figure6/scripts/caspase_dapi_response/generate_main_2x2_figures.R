@@ -90,11 +90,17 @@ compute_combined_temsi_interactions <- function(dat) {
     }
   }
 
-  bind_rows(rows) %>%
-    mutate(
-      categorical_BH_all = p.adjust(categorical_interaction_p, method = "BH"),
-      linear_slope_BH_all = p.adjust(linear_slope_interaction_p, method = "BH")
-    )
+  results <- bind_rows(rows)
+  displayed <- results$endpoint_id %in% c("ratio_pct", "dapi_relative")
+  results$categorical_BH_all <- NA_real_
+  results$linear_slope_BH_all <- NA_real_
+  results$categorical_BH_all[displayed] <- p.adjust(
+    results$categorical_interaction_p[displayed], method = "BH"
+  )
+  results$linear_slope_BH_all[displayed] <- p.adjust(
+    results$linear_slope_interaction_p[displayed], method = "BH"
+  )
+  results
 }
 
 interactions <- compute_combined_temsi_interactions(source_data)
