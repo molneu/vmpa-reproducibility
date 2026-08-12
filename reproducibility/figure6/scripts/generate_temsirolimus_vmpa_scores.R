@@ -6,40 +6,37 @@ suppressPackageStartupMessages({
 })
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 3L) {
+if (length(args) != 2L) {
   stop(
-    "Usage: Rscript generate_temsirolimus_vmpa_scores.R <raw-counts.csv> <ensembl-symbol-mapping.rds> <output-directory>",
+    "Usage: Rscript generate_temsirolimus_vmpa_scores.R <annotated-raw-counts.csv> <output-directory>",
     call. = FALSE
   )
 }
 
 raw_file <- normalizePath(args[1], mustWork = TRUE)
-mapping_file <- normalizePath(args[2], mustWork = TRUE)
-output_dir <- args[3]
+output_dir <- args[2]
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 raw <- read.csv(raw_file, check.names = FALSE, stringsAsFactors = FALSE)
-mapping <- readRDS(mapping_file)
 
-if (!"ensembl_gene_id" %in% names(raw)) {
-  stop("Raw-count input must contain an ensembl_gene_id column.", call. = FALSE)
-}
-if (!all(c("ensembl_gene_id", "hgnc_symbol") %in% names(mapping))) {
-  stop("Mapping must contain ensembl_gene_id and hgnc_symbol columns.", call. = FALSE)
+if (!all(c("ensembl_gene_id", "gene_symbol") %in% names(raw))) {
+  stop(
+    "Raw-count input must contain ensembl_gene_id and gene_symbol columns.",
+    call. = FALSE
+  )
 }
 if (anyDuplicated(raw$ensembl_gene_id)) {
   stop("Raw-count input contains duplicated Ensembl identifiers.", call. = FALSE)
 }
 
-sample_ids <- setdiff(names(raw), "ensembl_gene_id")
+sample_ids <- setdiff(names(raw), c("ensembl_gene_id", "gene_symbol"))
 counts <- as.matrix(raw[, sample_ids, drop = FALSE])
 storage.mode(counts) <- "numeric"
 if (anyNA(counts) || any(!is.finite(counts)) || any(counts < 0)) {
   stop("Raw counts must be finite, non-negative and non-missing.", call. = FALSE)
 }
 
-ensembl_ids <- sub("[.][0-9]+$", "", raw$ensembl_gene_id)
-symbols <- mapping$hgnc_symbol[match(ensembl_ids, mapping$ensembl_gene_id)]
+symbols <- raw$gene_symbol
 keep <- !is.na(symbols) & nzchar(symbols)
 counts <- counts[keep, , drop = FALSE]
 symbols <- symbols[keep]

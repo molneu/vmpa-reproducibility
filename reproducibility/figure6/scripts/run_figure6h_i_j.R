@@ -1,17 +1,16 @@
 #!/usr/bin/env Rscript
 
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) != 4L) {
+if (length(args) != 3L) {
   stop(
-    "Usage: Rscript run_figure6h_i_j.R <raw-counts.csv> <ensembl-symbol-mapping.rds> <western-blot.csv> <repository-root>",
+    "Usage: Rscript run_figure6h_i_j.R <annotated-raw-counts.csv> <western-blot.csv> <repository-root>",
     call. = FALSE
   )
 }
 
 raw_file <- normalizePath(args[1], mustWork = TRUE)
-mapping_file <- normalizePath(args[2], mustWork = TRUE)
-wb_file <- normalizePath(args[3], mustWork = TRUE)
-repo_root <- normalizePath(args[4], mustWork = TRUE)
+wb_file <- normalizePath(args[2], mustWork = TRUE)
+repo_root <- normalizePath(args[3], mustWork = TRUE)
 figure6_dir <- file.path(repo_root, "reproducibility", "figure6")
 score_dir <- file.path(
   figure6_dir, "data", "wb_correlation", "vmpa_wb_correlations"
@@ -35,7 +34,7 @@ run_script <- function(path, arguments = character()) {
 
 run_script(
   file.path(figure6_dir, "scripts", "generate_temsirolimus_vmpa_scores.R"),
-  c(raw_file, mapping_file, score_dir)
+  c(raw_file, score_dir)
 )
 
 old_working_directory <- getwd()
