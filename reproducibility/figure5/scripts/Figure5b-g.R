@@ -360,7 +360,7 @@ selected_data_list <- list()
 for (dataset_name in names(gsva_results_list)) {
   dataset <- gsva_results_list[[dataset_name]]
   N <- nrow(dataset)
-  scaled_data <- scale(dataset, scale = apply(dataset, 2, sd) * sqrt(N - 1 / N))
+  scaled_data <- scale(dataset, scale = apply(dataset, 2, sd) * sqrt((N - 1) / N))
   cor_matrix <- cor(t(scaled_data))
   high_cor <- findCorrelation(cor_matrix, cutoff = 0.8)
   scaled_data_corr <- scaled_data[-high_cor, ]
