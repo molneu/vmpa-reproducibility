@@ -36,7 +36,7 @@ Download this file from Figshare:
 https://figshare.com/s/f5cc8be3979e6b03b6a5
 
 ```text
-vmpa_reproducibility_input_data.tar
+vmpa_reproducibility_input_data_v1.0.tar
 ```
 Place the downloaded file into the repository root:
 
@@ -44,7 +44,7 @@ Place the downloaded file into the repository root:
 vmpa-reproducibility/
   README.md
   renv.lock
-  vmpa_reproducibility_input_data.tar
+  vmpa_reproducibility_input_data_v1.0.tar
   reproducibility/
 ```
 
@@ -53,7 +53,7 @@ Then extract:
 e.g.:
 
 ```bash
-tar -xf vmpa_reproducibility_input_data.tar
+tar -xf vmpa_reproducibility_input_data_v1.0.tar
 ```
 
 ## Step 3: Restore the R Environment
@@ -63,10 +63,9 @@ Open R or RStudio from the repository root and run in the R console:
 ```r
 install.packages("renv")
 renv::restore()
-renv::install("molneu/vmpaR@5e1c24890fa399204d523fa404557f20dc467e8d")
 ```
 
-This installs the R package versions recorded in `renv.lock` and the revision of `vmpaR` used for the Figure 6 analyses.
+This installs the R package versions recorded in `renv.lock`, including the revision of `vmpaR` used for the Figure 6 analyses.
 
 ## Step 4: Run a Figure Script
 

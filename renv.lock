@@ -12511,6 +12511,17 @@
       "Author": "Simon Garnier [aut, cre], Noam Ross [ctb, cph], Bob Rudis [ctb, cph], Marco Sciaini [ctb, cph], Antônio Pedro Camargo [ctb, cph], Cédric Scherer [ctb, cph]",
       "Repository": "CRAN"
     },
+    "vmpaR": {
+      "Package": "vmpaR",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "molneu",
+      "RemoteRepo": "vmpaR",
+      "RemoteRef": "5e1c24890fa399204d523fa404557f20dc467e8d",
+      "RemoteSha": "5e1c24890fa399204d523fa404557f20dc467e8d"
+    },
     "vroom": {
       "Package": "vroom",
       "Version": "1.6.5",
