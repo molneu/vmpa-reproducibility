@@ -129,8 +129,8 @@ Figure 6:
 Rscript reproducibility/figure6/scripts/'figure 6a-d.R'
 Rscript reproducibility/figure6/scripts/'Fig6 dose response curves_final.R'
 Rscript reproducibility/figure6/scripts/run_figure6h_i_j.R \
-  /path/to/Figure6_temsirolimus_raw_counts.csv \
-  /path/to/'260725 WB_corrected_data_with Ponceau.csv' \
+  figure6_temsirolimus/Figure6_temsirolimus_raw_counts.csv \
+  figure6_temsirolimus/'260725 WB_corrected_data_with Ponceau.csv' \
   .
 Rscript reproducibility/figure6/scripts/caspase_dapi_response/generate_main_2x2_figures.R
 ```
@@ -142,7 +142,7 @@ Supplementary Figure 2:
 ```bash
 cd reproducibility/supplementary_figure2/scripts/foundation_models
 bash run_supplementary_figure2_foundation_models.sh \
-  /path/to/embedding_methods_primary_data_export \
+  ../../../../supplementary_figure2_foundation_models/data_export \
   /path/to/BulkFormer \
   local_outputs
 ```
@@ -159,8 +159,8 @@ Supplementary Figure 9:
 
 ```bash
 Rscript reproducibility/supplementary_figure9/scripts/run_supplementary_figure9.R \
-  /path/to/Figure6_temsirolimus_raw_counts.csv \
-  /path/to/'260725 WB_corrected_data_with Ponceau.csv' \
+  figure6_temsirolimus/Figure6_temsirolimus_raw_counts.csv \
+  figure6_temsirolimus/'260725 WB_corrected_data_with Ponceau.csv' \
   .
 ```
 
