@@ -1,288 +1,305 @@
 #!/usr/bin/env Rscript
-# Precision–Recall Curves for COMPASS benchmarking (Figure 3d)
-# Author: Igor Cima
-# Created: 2025-07-28  Updated: 2025-07-29
 
-# ===== STEP 1: Load libraries =====
-library(readr)       # fast CSV I/O
-library(dplyr)       # data manipulation (explicit dplyr::select())
-library(tidyr)       # pivot_wider, pivot_longer
-library(stringr)     # string operations
-library(precrec)     # evalmod, auc
-library(ggplot2)     # plotting
-library(here)        # project-root paths
+suppressPackageStartupMessages({
+  library(readr)
+  library(dplyr)
+  library(stringr)
+  library(precrec)
+  library(ggplot2)
+  library(here)
+})
 
-# ===== STEP 2: Define directories & input files =====
 here::i_am("reproducibility/figure3/scripts/figure3d.R")
 
-base_dir    <- here("reproducibility", "figure3")
-data_dir    <- file.path(base_dir, "data")
-results_dir <- file.path(base_dir, "results")
-# ensure results directory exists
-dir.create(results_dir, recursive=TRUE, showWarnings=FALSE)
+data_dir <- here("reproducibility", "figure3", "data")
+results_dir <- here("reproducibility", "figure3", "results")
+dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 
-nes_file  <- file.path(data_dir, "250710 Benchmarking_fgsea results_ALL_CONTEXTS.csv")  # real FGSEA results
-null_file <- file.path(data_dir, "250715_fGSEA_100NULLmodels_SUMMARY.csv")                # null-model summary
+observed_file <- file.path(
+  data_dir,
+  "figure3d_observed_common_intersection.csv"
+)
+viper_null_file <- file.path(
+  data_dir,
+  "figure3d_viper_100_null_summary.csv"
+)
+fgsea_null_file <- file.path(
+  data_dir,
+  "250715_fGSEA_100NULLmodels_SUMMARY.csv"
+)
+size_file <- file.path(
+  data_dir,
+  "250710 Benchmarking_fgsea results_ALL_CONTEXTS.csv"
+)
 
-# ===== STEP 3: Read data =====
-nes_df       <- readr::read_csv(nes_file, col_types = cols())       # real FGSEA outputs
-null_summary <- readr::read_csv(null_file, col_types = cols())      # null-model means & SDs
+input_files <- c(observed_file, viper_null_file, fgsea_null_file, size_file)
+missing_files <- input_files[!file.exists(input_files)]
+if (length(missing_files)) {
+  stop("Missing Figure 3d input files:\n", paste(missing_files, collapse = "\n"))
+}
 
-# ===== STEP 4: Match & combine with null summary =====
-nes2 <- nes_df %>%
+observed <- read_csv(observed_file, show_col_types = FALSE)
+viper_null <- read_csv(viper_null_file, show_col_types = FALSE)
+fgsea_null <- read_csv(fgsea_null_file, show_col_types = FALSE)
+size_observed <- read_csv(size_file, show_col_types = FALSE)
+
+size_benchmark <- size_observed %>%
+  filter(str_detect(collection, "^b[0-9]+$")) %>%
   mutate(
-    join_collection = case_when(
-      str_detect(collection, "^b\\d+") ~ paste0(Context, "_", collection),  # COMPASS buckets
-      collection == "SigCom"            ~ "SigCom150",                       # SigCom key
-      TRUE                                ~ collection                         # Collectri or ULM
-    ),
-    GeneSetName = case_when(
-      str_detect(collection, "^b\\d+") ~ new_id,                             # COMPASS uses new_id
-      TRUE                                 ~ GENE                                 # others use gene name
-    )
-  )
-
-combined <- nes2 %>%
+    null_collection = paste0(Context, "_", collection),
+    GeneSetName = new_id
+  ) %>%
   left_join(
-    null_summary %>%
-      dplyr::rename(
-        join_collection = Collection,
-        TargetGene      = TargetGene,
-        GEO             = GEO
-      ),
+    fgsea_null %>%
+      rename(null_collection = Collection),
     by = c(
-      "join_collection",            # key in nes2
-      "GSE"         = "GEO",      # align GSE <-> GEO
-      "GENE"        = "TargetGene",
-      "GeneSetName" = "GeneSetName"
+      "null_collection",
+      "GSE" = "GEO",
+      "GENE" = "TargetGene",
+      "GeneSetName"
     )
-  )%>%
+  ) %>%
+  mutate(
+    z_score = if_else(
+      !is.na(grand_sd_NES) & grand_sd_NES > 0,
+      (NES - grand_mean_NES) / grand_sd_NES,
+      NA_real_
+    ),
+    confidence = as.numeric(str_match(pathway.x, "_c([0-9]+)$")[, 2])
+  ) %>%
+  group_by(GENE, Context.x) %>%
+  filter(is.na(confidence) | confidence == max(confidence, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(
+    score = case_when(
+      expected_nes_sign == "pos" ~ z_score,
+      expected_nes_sign == "neg" ~ -z_score,
+      TRUE ~ NA_real_
+    ),
+    label = as.integer(random_flag == 1)
+  ) %>%
+  filter(!is.na(score))
 
-# compute z-score, guard against zero SD\ ncombined_z <- combined %>%
-mutate(
-  z_score = if_else(
-    grand_sd_NES > 0,
-    (NES - grand_mean_NES) / grand_sd_NES,
-    NA_real_
-  )
+gene_set_sizes <- c(25, 50, 100, 150, 200, 250, 300)
+size_methods <- paste0("b", gene_set_sizes)
+size_scores <- split(size_benchmark$score, size_benchmark$collection)[size_methods]
+size_labels <- split(size_benchmark$label, size_benchmark$collection)[size_methods]
+
+if (any(lengths(size_scores) != 218L)) {
+  stop("Each gene-set-size benchmark must contain exactly 218 observations.")
+}
+
+size_pr_object <- evalmod(
+  scores = size_scores,
+  labels = size_labels,
+  modnames = as.character(gene_set_sizes),
+  mode = "rocprc"
 )
 
-# ===== STEP 5: Annotate each gene‐set with its confidence level =====
-suppressWarnings(
-  combined_conf <- combined %>%
-  dplyr::mutate(
-    conf = as.integer(
-      sub(".*_c(\\d+)$", "\\1", pathway.x)   # extract the N from “…_cN”
-    )
+size_auc_table <- auc(size_pr_object) %>%
+  filter(curvetypes == "PRC") %>%
+  transmute(gene_set_size = as.integer(modnames), AUCPR = aucs) %>%
+  arrange(gene_set_size)
+
+size_plot <- ggplot(
+  fortify(size_pr_object) %>% filter(curvetype == "PRC"),
+  aes(x = x, y = y, color = modname)
+) +
+  geom_line(linewidth = 1) +
+  labs(x = "Recall", y = "Precision", color = "Gene-set size") +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 0.6),
+    legend.position = "bottom"
   )
+
+write_csv(
+  size_benchmark,
+  file.path(results_dir, "Source data_Fig 3d_gene_set_size_zscores.csv")
+)
+write_csv(
+  size_auc_table,
+  file.path(results_dir, "Source data_Fig 3d_gene_set_size_AUCPR.csv")
+)
+ggsave(
+  file.path(results_dir, "Fig 3d_VMPA_PR_gene_set_size.pdf"),
+  size_plot,
+  width = 6.5,
+  height = 4.5,
+  bg = "white"
 )
 
-# ===== STEP 6: Select only the highest‐confidence sets per GENE & Context =====
-combined_best <- combined_conf %>%
-  dplyr::group_by(GENE, Context.x) %>%
-  dplyr::mutate(
-    max_conf = max(conf, na.rm = TRUE)  # returns -Inf if all conf are NA
-  ) %>%
-  dplyr::filter(
-    is.na(conf) | conf == max_conf     # keep NAs or highest‐conf rows
-  ) %>%
-  dplyr::select(-max_conf) %>%         # clean up
-  dplyr::ungroup()
+normalize_context <- function(x) {
+  x <- trimws(x)
+  recode(
+    x,
+    "CRC" = "crc",
+    "Glioblastoma" = "glioma",
+    "PDAC" = "pdac",
+    "Breast Cancer" = "breast",
+    "Ovarian Cancer" = "ovarian",
+    "Melanoma" = "melanoma",
+    "Prostate Cancer" = "prostate",
+    "NSCLC" = "nsclc",
+    .default = tolower(x)
+  )
+}
 
-# optional: write merged data for record
-readr::write_csv(
-  combined_best,
+expected_methods <- c(
+  "Collectri_ULM",
+  "SigCom250",
+  "VIPER_default",
+  "VIPER_noFilter"
+)
+
+observed <- observed %>%
+  mutate(
+    Context = normalize_context(Context),
+    GENE = toupper(GENE),
+    method = case_when(
+      str_detect(collection, "_b250$") ~ "VMPA_250",
+      TRUE ~ collection
+    )
+  )
+
+method_counts <- observed %>%
+  count(method, random_flag, name = "n")
+
+if (!setequal(unique(observed$method), c("VMPA_250", expected_methods))) {
+  stop("Unexpected methods in the observed common-intersection table.")
+}
+if (any(method_counts$n != 64L)) {
+  stop("Each method and class must contain exactly 64 observations.")
+}
+
+viper_rows <- observed %>%
+  filter(method %in% c("VIPER_default", "VIPER_noFilter")) %>%
+  left_join(
+    viper_null %>%
+      transmute(
+        GSE,
+        GENE = toupper(GENE),
+        Context = normalize_context(Context),
+        method = collection,
+        grand_mean_NES,
+        grand_sd_NES
+      ),
+    by = c("GSE", "GENE", "Context", "method")
+  )
+
+fgsea_null <- fgsea_null %>%
+  transmute(
+    GSE = GEO,
+    GENE = toupper(TargetGene),
+    Context = normalize_context(Context),
+    collection = Collection,
+    GeneSetName,
+    grand_mean_NES,
+    grand_sd_NES
+  )
+
+vmpa_rows <- observed %>%
+  filter(method == "VMPA_250") %>%
+  mutate(GeneSetName = str_remove(pathway, "_c[0-9]+$")) %>%
+  left_join(
+    fgsea_null,
+    by = c("GSE", "GENE", "Context", "collection", "GeneSetName")
+  )
+
+comparator_rows <- observed %>%
+  filter(method %in% c("SigCom250", "Collectri_ULM")) %>%
+  left_join(
+    fgsea_null %>% select(-GeneSetName),
+    by = c("GSE", "GENE", "Context", "collection")
+  )
+
+benchmark <- bind_rows(vmpa_rows, comparator_rows, viper_rows) %>%
+  mutate(
+    z_score = if_else(
+      !is.na(grand_sd_NES) & grand_sd_NES > 0,
+      (NES - grand_mean_NES) / grand_sd_NES,
+      NA_real_
+    ),
+    score = case_when(
+      expected_nes_sign == "pos" ~ z_score,
+      expected_nes_sign == "neg" ~ -z_score,
+      TRUE ~ NA_real_
+    ),
+    label = as.integer(random_flag == 1)
+  )
+
+if (anyNA(benchmark$score)) {
+  stop("Missing null-model statistics or perturbation directions after merging.")
+}
+
+benchmark_counts <- benchmark %>%
+  count(method, label, name = "n")
+if (any(benchmark_counts$n != 64L)) {
+  stop("The merged benchmark does not contain 64 real and 64 null scores per method.")
+}
+
+score_list <- split(benchmark$score, benchmark$method)
+label_list <- split(benchmark$label, benchmark$method)
+
+pr_object <- evalmod(
+  scores = score_list,
+  labels = label_list,
+  modnames = names(score_list),
+  mode = "rocprc"
+)
+
+auc_table <- auc(pr_object) %>%
+  filter(curvetypes == "PRC") %>%
+  transmute(method = modnames, AUCPR = aucs) %>%
+  arrange(desc(AUCPR))
+
+method_colors <- c(
+  "VMPA_250" = "#d73027",
+  "VIPER_default" = "#1f78b4",
+  "VIPER_noFilter" = "#9ad0ec",
+  "SigCom250" = "#2e7d32",
+  "Collectri_ULM" = "#9ccc65"
+)
+
+method_labels <- c(
+  "VMPA_250" = "VMPA",
+  "VIPER_default" = "VIPER (default)",
+  "VIPER_noFilter" = "VIPER (no filter)",
+  "SigCom250" = "SigCom",
+  "Collectri_ULM" = "CollecTRI-ULM"
+)
+
+plot_data <- fortify(pr_object) %>%
+  filter(curvetype == "PRC")
+
+benchmark_plot <- ggplot(
+  plot_data,
+  aes(x = x, y = y, color = modname)
+) +
+  geom_line(linewidth = 1.2) +
+  labs(x = "Recall", y = "Precision", color = "Method") +
+  scale_color_manual(values = method_colors, labels = method_labels) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
+  theme_minimal(base_size = 13) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 0.6),
+    legend.position = "bottom"
+  )
+
+write_csv(
+  benchmark,
   file.path(results_dir, "Source data_Fig 3d_zscores.csv")
 )
-
-# ===== STEP 5: Prepare data for PR curves =====
-df <- combined_best %>%
-  mutate(
-    z_adj = if_else(expected_nes_sign == "pos", -z_score, z_score)  # adjust for direction
-  ) %>%
-  filter(! collection %in% c("SigCom", "Collectri", "Collectri_ULM"))  # drop non-COMPASS contexts
-
-# pivot wide for COMPASS buckets
-wide_tbl <- df %>%
-  dplyr::select(GSE, random_flag, pathway.x, collection, z_adj) %>%
-  distinct() %>%
-  tidyr::pivot_wider(
-    id_cols      = c(GSE, random_flag, pathway.x),
-    names_from   = collection,
-    values_from  = z_adj,
-    names_prefix = "zscore_"
-  )
-
-# ===== STEP 6: Build PR curve inputs for model =====
-
-# COMPASS bucket sizes to include
-compass_sizes <- c(25,50,100,150,200,250,300)
-keep_cols     <- paste0("zscore_b", compass_sizes)
-modnames_orig <- keep_cols
-
-pr_input_orig <- wide_tbl %>%
-  mutate(across(dplyr::starts_with("zscore_"), ~ - .x)) %>%  # flip sign for PRC
-  dplyr::mutate(Label = as.numeric(random_flag == 1))        # 1 = real, 0 = null
-
-# split into lists for evalmod
-score_list_orig <- pr_input_orig %>% dplyr::select(all_of(keep_cols)) %>% as.list()
-label_list_orig <- rep(list(pr_input_orig$Label), length(score_list_orig))
-
-# ===== STEP 7: Run PRC for model =====
-
-precrec_obj_orig <- evalmod(
-scores   = score_list_orig,
-labels   = label_list_orig,
-modnames = modnames_orig,
-mode     = "rocprc"    # compute both ROC and PRC
+write_csv(
+  auc_table,
+  file.path(results_dir, "Source data_Fig 3d_AUCPR.csv")
 )
-
-# ===== STEP 8: Plot PR curves  =====
-
-msdf_orig <- fortify(precrec_obj_orig)
-
-p1 <- ggplot(msdf_orig %>% filter(curvetype == "PRC"), aes(x = x, y = y, color = modname)) +
-  geom_line(size = 1) +
-  labs(
-    title = "Unselected COMPASS gene sets",
-    x     = "Recall", y = "Precision"
-  ) +
-  theme_minimal() +
-  scale_color_manual(values = c(
-    zscore_b25  = "#0072B2",
-    zscore_b50  = "#D55E00",
-    zscore_b100 = "#009E73",
-    zscore_b150 = "#D62728",
-    zscore_b200 = "#CC79A7",
-    zscore_b250 = "#56B4E9",
-    zscore_b300 = "#E69F00"
-  )) +
-  theme(
-    legend.title = element_blank(),
-    panel.border = element_rect(color = "black", fill = NA, size = 0.5),
-    axis.text.x  = element_text(angle = 45, hjust = 1)
-  )
-
 ggsave(
-  file.path(results_dir, "Fig 3d_compass_PR_gene_set_size.pdf"),
-  p1, width=5, height=4, bg="white"
+  file.path(results_dir, "Fig 3d_VMPA_PR_benchmark.pdf"),
+  benchmark_plot,
+  width = 6.5,
+  height = 4.5,
+  bg = "white"
 )
 
-# ===== STEP 9: Print AUC  =====
-
-auc_df_orig <- auc(precrec_obj_orig)
-message("AUCs for Precision-recall curves (COMPASS model):")
-auc_df_orig %>% filter(curvetypes == "PRC") %>% print()
-
-# pick the row with the max AUC
-best_row <- auc_df_orig %>%
-  dplyr::slice_max(aucs, n = 1)
-                  
-message("Best gene set size: ", best_row$modnames)
-
-# ===== STEP 10: Prepare b250 benchmarking dataset =====
-
-# rebuild wide with GENE to isolate b250
-
-df <- combined_best %>%
-  mutate(
-    z_adj = if_else(expected_nes_sign == "pos", -z_score, z_score)  # adjust for direction
-  )
-
-# 2) Rebuild wide to isolate b250
-wide_b250 <- df %>%
-  dplyr::select(GSE, GENE, random_flag, pathway.x, collection, z_adj) %>%
-  distinct() %>%
-  tidyr::pivot_wider(
-    id_cols      = c(GSE, GENE, random_flag, pathway.x),
-    names_from   = collection,
-    values_from  = z_adj,
-    names_prefix = "zscore_"
-  )
-
-b250_long <- wide_b250 %>%
-  dplyr::select(GSE, GENE, random_flag, pathway.x, zscore_b250) %>%
-  dplyr::rename(pathway = pathway.x, z = zscore_b250)
-
-# 3) Build best_b250_rows using pre‐computed high‐confidence selections
-best_b250_rows <- df %>%
-  # only b250 rows
-  dplyr::filter(collection == "b250") %>%
-  # keep only those pathways you marked high‐confidence
-  dplyr::semi_join(
-    combined_best %>% dplyr::select(GSE, GENE, pathway.x),
-    by = c("GSE", "GENE", "pathway.x")
-  ) %>%
-  # join SigCom
-  dplyr::left_join(
-    df %>% dplyr::filter(collection=="SigCom") %>%
-      dplyr::select(GSE, GENE, random_flag, z_adj) %>%
-      dplyr::rename(z_SigCom = z_adj),
-    by = c("GSE","GENE","random_flag")
-  ) %>%
-  # join Collectri
-  dplyr::left_join(
-    df %>% dplyr::filter(collection=="Collectri") %>%
-      dplyr::select(GSE, GENE, random_flag, z_adj) %>%
-      dplyr::rename(z_Collectri = z_adj),
-    by = c("GSE","GENE","random_flag")
-  ) %>%
-  # join Collectri_ULM
-  dplyr::left_join(
-    df %>% dplyr::filter(collection=="Collectri_ULM") %>%
-      dplyr::select(GSE, GENE, random_flag, z_adj) %>%
-      dplyr::rename(z_Collectri_ULM = z_adj),
-    by = c("GSE","GENE","random_flag")
-  ) %>%
-  # compute per‐GSE&GENE mean z for b250
-  dplyr::left_join(
-    b250_long %>%
-      dplyr::group_by(GSE, GENE, random_flag) %>%
-      dplyr::summarise(z_b250mean = mean(z, na.rm=TRUE), .groups="drop"),
-    by = c("GSE","GENE","random_flag")
-  ) %>%
-  # flip all for PRC
-  dplyr::mutate(across(dplyr::starts_with("z_"), ~ - .x))
-
-# 4) Now run PRC exactly as before
-keep_cols2 <- c("z_b250mean","z_SigCom","z_Collectri","z_Collectri_ULM")
-modnames2  <- c("b250_mean","SigCom","Collectri","Collectri_ULM")
-raw_scores2 <- best_b250_rows %>% dplyr::select(all_of(keep_cols2)) %>% as.list()
-raw_labels2 <- best_b250_rows$random_flag
-
-precrec_obj2 <- precrec::evalmod(
-  scores   = raw_scores2,
-  labels   = raw_labels2,
-  modnames = modnames2,
-  mode     = "rocprc"
-)
-
-# ===== STEP 12: Plot PR curves for best-b250 =====
-
-msdf2 <- fortify(precrec_obj2)
-
-p2 <- ggplot(msdf2 %>% filter(curvetype == "PRC"), aes(x=x,y=y,color=modname)) +
-  geom_line(size=1) +
-  labs(title="PR: Best b250 vs others", x="Recall", y="Precision") +
-  theme_minimal() +
-  scale_color_manual(values=c(
-    b250_best      ="#0072B2",
-    b250_mean      ="#56B4E9",
-    SigCom         ="#D55E00",
-    Collectri      ="#CC79A7",
-    Collectri_ULM  ="#E69F00"
-  )) +
-  theme(legend.title=element_blank(), panel.border=element_rect(color="black",fill=NA,size=0.5), axis.text.x=element_text(angle=45,hjust=1))
-
-ggsave(
-  file.path(results_dir, "Fig 3d_compass_PR_benchmark.pdf"),
-  p2, width=5, height=4, bg="white"
-)
-
-
-# ===== STEP 13: Print AUC for best-b250 =====
-
-auc_df2 <- auc(precrec_obj2)
-message("AUCs for Precision-recall curves (benchmarking):")
-auc_df2 %>% filter(curvetypes=="PRC") %>% print()
-
+print(auc_table)

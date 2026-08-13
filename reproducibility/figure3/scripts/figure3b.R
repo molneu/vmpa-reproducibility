@@ -16,6 +16,7 @@ library(ggplot2)
 # Define output directories for figure 3 reproducibility
 fig3_data_dir    <- here("reproducibility", "figure3", "data")
 fig3_results_dir <- here("reproducibility", "figure3", "results")
+shared_cmap_dir  <- here("reproducibility", "figure1", "data")
 
 # Create directories if they do not exist (recursive, suppress warnings)
 dir.create(fig3_data_dir,    recursive = TRUE, showWarnings = FALSE)
@@ -23,8 +24,8 @@ dir.create(fig3_results_dir, recursive = TRUE, showWarnings = FALSE)
 
 # ====== STEP 2: Load & annotate column metadata ======
 # 2.1 Define input files
-gctx_file    <- file.path(fig3_data_dir, "level5_beta_trt_xpr_n142901x12328.gctx")
-siginfo_file <- file.path(fig3_data_dir, "siginfo_beta.txt")
+gctx_file    <- file.path(shared_cmap_dir, "level5_beta_trt_xpr_n142901x12328.gctx")
+siginfo_file <- file.path(shared_cmap_dir, "siginfo_beta.txt")
 
 # 2.2 Parse GCTX and load signature info
 trt_xpr   <- parse_gctx(gctx_file)                      # expression matrix
@@ -43,7 +44,7 @@ rm(list = tmp_remove); rm(tmp_remove)
 # ====== STEP 3: Annotate row metadata (gene symbols & inference) ======
 # 3.1 Load LINC gene annotation map
 gene_map <- read.csv(
-  file.path(fig3_data_dir, "LINC gene annotations.csv"),
+  file.path(shared_cmap_dir, "LINC gene annotations.csv"),
   stringsAsFactors = FALSE
 )
 
@@ -257,7 +258,7 @@ for(ct in names(subsets)){
 
 # ====== STEP 10: Generate Fig 3b barplot ======
 # 10.1 Drop contexts without sufficient samples
-keep_contexts <- setdiff(names(subsets), c("gastric", "headneck"))
+keep_contexts <- setdiff(names(subsets), c("AGS", "BICR6"))
 subs2 <- subsets[keep_contexts]
 
 # 10.2 Count high-confidence signatures and unique perturbed genes per context
@@ -314,4 +315,3 @@ ggsave(
 
 
 # End of Figure 3b pipeline
-
