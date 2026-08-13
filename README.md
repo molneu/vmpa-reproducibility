@@ -2,7 +2,7 @@
 
 This repository contains the scripts needed to reproduce the main figures from the VMPA manuscript.
 
-When executing scripts, these will produce figure outputs to `results/` folders.
+Scripts write figures and tables to the corresponding `results/` folders.
 
 ## What You Need
 
@@ -27,9 +27,9 @@ Option B, without Git:
 4. Unzip the repository.
 5. Open a terminal in the unzipped `vmpa-reproducibility` folder.
 
-All commands below should be run from the folder that contains this `README.md` file (repository root)
+All commands below should be run from the folder containing this `README.md` file (the repository root).
 
-## Step 2: Download the compressed Data from Figshare and extract
+## Step 2: Download and extract the compressed data from Figshare
 
 Download this file from Figshare:
 
@@ -63,9 +63,10 @@ Open R or RStudio from the repository root and run in the R console:
 ```r
 install.packages("renv")
 renv::restore()
+renv::install("molneu/vmpaR@5e1c24890fa399204d523fa404557f20dc467e8d")
 ```
 
-This installs the R package versions recorded in `renv.lock`.
+This installs the R package versions recorded in `renv.lock` and the revision of `vmpaR` used for the Figure 6 analyses.
 
 ## Step 4: Run a Figure Script
 
@@ -78,7 +79,7 @@ cd /path/to/vmpa-reproducibility
 Rscript reproducibility/figure1/scripts/'Figure 1a-g.R'
 ```
 
-in R/Rstudio
+or in R/RStudio:
 
 ```r
 setwd("/path/to/vmpa-reproducibility")
@@ -127,27 +128,45 @@ Figure 6:
 ```bash
 Rscript reproducibility/figure6/scripts/'figure 6a-d.R'
 Rscript reproducibility/figure6/scripts/'Fig6 dose response curves_final.R'
-Rscript reproducibility/figure6/scripts/wb_correlation/analyze_original_wb_mtor_s6_across_cell_lines.R
-Rscript reproducibility/figure6/scripts/wb_correlation/make_four_mtor_validation_scatterplots.R
-Rscript reproducibility/figure6/scripts/target_selection/prepare_activity_matrix_from_raw_result.R
-Rscript reproducibility/figure6/scripts/target_selection/make_vmpa_treatment_response_tables.R
-Rscript reproducibility/figure6/scripts/target_selection/make_vmpa_average_temsi_response.R
-Rscript reproducibility/figure6/scripts/target_selection/rank_vmpa_candidates_n250_sample_pop_sd.R
-Rscript reproducibility/figure6/scripts/target_selection/vmpa_initial_unbiased_targetable_screen_n250_sample_pop_sd.R positive
-Rscript reproducibility/figure6/scripts/target_selection/vmpa_three_dotplots_unique_FALSE_n250_sample_pop_sd.R positive 10
-Rscript reproducibility/figure6/scripts/apoptosis_pathway/make_compass_intrinsic_apoptosis_pathway.R
+Rscript reproducibility/figure6/scripts/run_figure6h_i_j.R \
+  /path/to/Figure6_temsirolimus_raw_counts.csv \
+  /path/to/'260725 WB_corrected_data_with Ponceau.csv' \
+  .
 Rscript reproducibility/figure6/scripts/caspase_dapi_response/generate_main_2x2_figures.R
 ```
+
+The `run_figure6h_i_j.R` wrapper generates the VMPA scores and runs the western-blot correlation, target-selection, Figure 6i plotting, and apoptosis-pathway scripts in the required order.
+
+Supplementary Figure 2:
+
+```bash
+cd reproducibility/supplementary_figure2/scripts/foundation_models
+bash run_supplementary_figure2_foundation_models.sh \
+  /path/to/embedding_methods_primary_data_export \
+  /path/to/BulkFormer \
+  local_outputs
+```
+
+See `reproducibility/supplementary_figure2/scripts/foundation_models/README.md` for the required Python environments and model inputs.
 
 Supplementary Figure 5:
 
 ```bash
-Rscript reproducibility/supplementary_figure5/scripts/matched_family_benchmark/paper_context_only_effect_threshold_figures.R
+Rscript reproducibility/supplementary_figure5/paper_context_only_effect_threshold_figures.R
+```
+
+Supplementary Figure 9:
+
+```bash
+Rscript reproducibility/supplementary_figure9/scripts/run_supplementary_figure9.R \
+  /path/to/Figure6_temsirolimus_raw_counts.csv \
+  /path/to/'260725 WB_corrected_data_with Ponceau.csv' \
+  .
 ```
 
 ## Notes
 
-Some scripts can take a long time to execute
+Some scripts can take a long time to execute.
 
 ## Citation
 
