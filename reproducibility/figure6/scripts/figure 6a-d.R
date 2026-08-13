@@ -168,8 +168,8 @@ write.csv(tt, out_fname, row.names = TRUE)
 # Figure 6b STRING source data are stored under reproducibility/figure6/data.
 # "Source data_Fig6b_string_annotations.txt" contains the 35-protein STRING input and annotations.
 # "Source data_Fig6b_string_output.pdf" records the STRING v12.0 network and settings: full evidence
-# network, text mining/experiments/databases, minimum interaction score 0.400, no added interactors,
-# and disconnected nodes hidden.
+# network, experiments/databases, text mining excluded, minimum interaction score 0.400,
+# no added interactors, and disconnected nodes hidden.
 # "Source data_Fig6b_string_interactions.csv" contains the quantitative STRING interaction scores.
 
 # ====== VOLCANO PLOT ======
