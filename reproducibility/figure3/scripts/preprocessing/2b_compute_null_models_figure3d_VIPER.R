@@ -222,13 +222,13 @@ message("   → ", nrow(viper_null_summary), " rows summarised across all contex
 
 
 
-View(final_df %>%
-  filter(random_flag == 0 & grepl("^VIPER_", collection)) %>%
-  group_by(GSE, GENE, Context, collection) %>%
-  summarise(
-    n_nulls = n_distinct(null_id),
-    nes_min = min(NES, na.rm = TRUE),
-    nes_max = max(NES, na.rm = TRUE),
-    unique_nes = n_distinct(round(NES, 4)),
-    all_nas = all(is.na(NES))
-  ))
+# View(final_df %>%
+#   filter(random_flag == 0 & grepl("^VIPER_", collection)) %>%
+#   group_by(GSE, GENE, Context, collection) %>%
+#   summarise(
+#     n_nulls = n_distinct(null_id),
+#     nes_min = min(NES, na.rm = TRUE),
+#     nes_max = max(NES, na.rm = TRUE),
+#     unique_nes = n_distinct(round(NES, 4)),
+#     all_nas = all(is.na(NES))
+#   ))

@@ -233,7 +233,7 @@ ggsave(
   dot_p, width=8, height=3, bg="white"
 )
 
-View(fgsea_sum)
+# View(fgsea_sum)
 
 ###>>>> Fig 1b, Dotplot Prec-Rec AKT1 <<<<  ----
 p_pr <- ggplot(fgsea_sum, aes(x=Recall,y=Precision)) +
@@ -773,5 +773,4 @@ ggsave(
   device   = "pdf",
   bg       = "white"
 )
-
 

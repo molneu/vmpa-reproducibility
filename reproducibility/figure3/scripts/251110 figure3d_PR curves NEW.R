@@ -124,7 +124,7 @@ cat("\nBest performing method:",
 n_by_method <- sapply(label_list, length)
 n_by_method
 
-View(df2)
+# View(df2)
 
 # ---------- F1 scores ----------
 f1_df <- msdf %>%
@@ -195,10 +195,10 @@ f1_context_df <- f1_context_df %>%
   dplyr::left_join(n_counts, by = c("Context", "Method"))
 
 cat("\n📊 F1 scores with total sample counts:\n")
-View(f1_context_df)
+# View(f1_context_df)
 
 cat("\n📊 Context-specific F1 scores:\n")
-View(f1_context_df)
+# View(f1_context_df)
 
 # ============================================================
 # 🧮 Compute AUC (PRC and ROC) per context × method
@@ -250,7 +250,7 @@ context_summary <- context_summary %>%
   dplyr::arrange(Context, desc(F1_max))
 
 cat("\n✅ Summary per context × method:\n")
-View(context_summary)
+# View(context_summary)
 
 
 # ============================================================
@@ -321,4 +321,3 @@ random_baseline <- df2_precrec %>%
 random_baseline %>%
   dplyr::arrange(desc(expected_random_F1)) %>%
   head()
-
