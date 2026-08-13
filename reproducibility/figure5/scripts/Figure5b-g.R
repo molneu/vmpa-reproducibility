@@ -422,11 +422,11 @@ annotation_col$M3C_name <- colnames(m3c_results_list.1[["realdataresults"]][[k]]
 rownames(annotation_col) <- annotation_col$Cluster
 
 # Transcriptome M3C cluster
-ordered_data.tr <- m3c_results_list_tr.1[["realdataresults"]][[10]][["ordered_data"]]
+ordered_data.tr <- m3c_results_list_tr.1[["realdataresults"]][[11]][["ordered_data"]]
 cluster_names.tr <- colnames(ordered_data.tr)
 annotation_col$Cluster_TR <- cluster_names.tr
 annotation_col$M3C_cluster_TR <- factor(
-  combined_m3c_results[["transcriptome_log_1.5"]][["realdataresults"]][[10]][["ordered_annotation"]]$consensuscluster
+  combined_m3c_results[["transcriptome_log_1.5"]][["realdataresults"]][[11]][["ordered_annotation"]]$consensuscluster
 )
 
 # Patient ID / pair_or_id annotation
