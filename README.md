@@ -178,6 +178,12 @@ Supplementary Figure 7 (run after Figure 5):
 Rscript reproducibility/supplementary_figure7/supplementary_figure7_random_forest_validation.R
 ```
 
+Supplementary Figure 8:
+
+```bash
+Rscript reproducibility/supplementary_figure8/run_supplementary_figure8.R
+```
+
 Supplementary Figure 9:
 
 ```bash
