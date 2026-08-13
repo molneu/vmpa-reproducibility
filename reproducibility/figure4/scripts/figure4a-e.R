@@ -26,6 +26,7 @@ here::i_am("reproducibility/figure4/scripts/figure4a-e.R")
 # Create output directories if they do not exist
 data_dir    <- here("reproducibility", "figure4", "data")
 results_dir <- here("reproducibility", "figure4", "results")
+shared_cmap_dir <- here("reproducibility", "figure1", "data")
 dir.create(data_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 
@@ -244,7 +245,7 @@ for (i in seq_len(nrow(params))) {
   
   # 2.13) now just do one enrichment plot for sel_name
   nes  <- fg$NES[ fg$pathway == sel_name ]
-  pval <- fg$pval[ fg$pathway == sel_name ]
+  fdr <- fg$padj[ fg$pathway == sel_name ]
   
   p <- plotEnrichment(
     pathway = gs_list[[sel_name]],
@@ -252,7 +253,7 @@ for (i in seq_len(nrow(params))) {
   ) +
     labs(
       title    = paste0(GENE, " | ", sel_name, " (NES=", round(nes,2), ")"),
-      subtitle = paste0("p=", signif(pval,3))
+      subtitle = paste0("FDR=", signif(fdr,3))
     ) +
     theme_minimal() +
     theme(
@@ -265,11 +266,11 @@ for (i in seq_len(nrow(params))) {
       legend.position   = "bottom"
     )
   
-  # 2.14) Store only that one plot, NES & pval
+  # 2.14) Store only that one plot, NES & FDR
   results[[GENE]] <- list(
     plot = p,
     NES  = nes,
-    pval = pval
+    FDR = fdr
   )
 }
 
@@ -424,7 +425,7 @@ ggsave(filename = file.path(results_dir, "Fig4d_PRC_nuclear_access.pdf"),
 # Load and clean drug signature data
 gct_file   <- file.path(data_dir, "drugs_U251MG_withLINCsignatures.gct")
 meta_file  <- file.path(data_dir, "metadata drugs_U251MG_withLINCsignatures.txt")
-annot_file <- file.path(data_dir, "LINC gene annotations.csv")
+annot_file <- file.path(shared_cmap_dir, "LINC gene annotations.csv")
 drug_file  <- file.path(data_dir, "COMPASS_drug_target interactions.csv")
 # Parse the GCT file containing drug perturbation signatures
 gct <- parse_gctx(gct_file)
@@ -443,10 +444,12 @@ drug_df <- read_csv(drug_file, col_types = cols(
   Drug = col_character(), Target = col_character(), Mode_of_action = col_character()
 ))
 drug_meta <- drug_df %>%
-  group_by(Drug) %>%
+  mutate(drug_key = tolower(Drug)) %>%
+  group_by(drug_key) %>%
   summarise(Targets = list(unique(Target)), MoA = list(unique(Mode_of_action)), .groups = "drop")
 gct@cdesc <- gct@cdesc %>%
-  left_join(drug_meta, by = c("cmap_name" = "Drug")) %>%
+  mutate(drug_key = tolower(cmap_name)) %>%
+  left_join(drug_meta, by = "drug_key") %>%
   mutate(Targets = ifelse(is.na(Targets), list(character()), Targets),
          MoA     = ifelse(is.na(MoA),     list(character()), MoA))
 
@@ -460,6 +463,10 @@ rownames(mat) <- make.unique(gct@rdesc$symbol)
 all_targets <- unique(unlist(drug_meta$Targets))
 # Load COMPASS gene sets for glioma context (top 250 genes), filtered to relevant targets
 comp_sets <- compass_gsc("glioma", n = 250, targets = all_targets, output = "list")
+available_targets <- unique(sub("_.*$", "", names(comp_sets)))
+eligible_drugs <- drug_meta %>%
+  filter(purrr::map_lgl(Targets, ~ any(.x %in% available_targets))) %>%
+  pull(drug_key)
 # Run FGSEA for each drug signature (each column in the matrix)
 set.seed(123)
 fgsea_list <- lapply(colnames(mat), function(sig) {
@@ -481,6 +488,8 @@ sig_info <- gct@cdesc %>%
          MoA     = purrr::map_chr(MoA,     ~ paste(., collapse = ",")))
 
 gf <- fgsea_res %>% left_join(sig_info, by = "sig_id")
+gf_supplementary <- gf %>%
+  filter(tolower(cmap_name) %in% eligible_drugs)
 
 # Select specific drugs and targets of interest for plotting
 sel_drugs   <- c("palbociclib", "thioridazine", "afatinib", "simvastatin",
@@ -509,7 +518,7 @@ plot_df <- gf_filtered %>%
   dplyr::select(-conf)
 
 write.csv(plot_df[, -8], paste0(results_dir, "/Source Data_Fig4e_NES_dotplot.csv"))
-write.csv(gf[, -8], paste0(results_dir, "/Supplementary Table 4_all inhibitors tested.csv"))
+write.csv(gf_supplementary[, -8], paste0(results_dir, "/Supplementary Table 4_all inhibitors tested.csv"))
 
 
 # Compute plot aesthetics (point size, color, transparency based on NES and significance)
