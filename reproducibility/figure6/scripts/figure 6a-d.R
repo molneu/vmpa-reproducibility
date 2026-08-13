@@ -5,16 +5,13 @@ library(GSEABase)  # Gene set container
 library(GSVA)      # GSVA/gsvaParam/gsva
 library(limma)     # linear modeling for differential expression
 library(ggplot2)   # plotting
+library(dplyr)
 library(here)      # project-rooted paths
 
 # ====== PATHS & INPUTS ======
 # ExpressionSet for Figure 6 is expected under reproducibility/figure6/data
 eset_path <- here::here("reproducibility", "figure6", "data", "ExpressionSet_GSE145128.rds")
 eset <- readRDS(eset_path)
-
-# ====== QC: Expression distribution ======
-# Boxplot of raw expression values (no outliers shown)
-box <- boxplot(eset@assayData[["exprs"]], outline = FALSE, main = "Raw expression distribution")
 
 # ====== COMPASS GENE SETS FUNCTION ======
 # Extract gene signatures for a given context (copied/adapted from earlier)
@@ -125,17 +122,12 @@ gsva_data <- as.data.frame(exprs(gsva_result))  # enrichment scores matrix
 gsva_result_clinical <- gsva_result[, gsva_result$relapse_TYPE != "eR"]
 gsva_result_clinical <- gsva_result_clinical[, !(gsva_result_clinical$patient_ID %in% c("B046", "B078"))]
 
-# Check distribution after clinical filtering
-box2 <- boxplot(gsva_result_clinical@assayData[["exprs"]], main = "GSVA scores after clinical filtering")
-
 # ====== NORMALIZATION ======
 # Extract matrix to normalize by population SD
 tonorm_eset <- gsva_result_clinical@assayData[["exprs"]]
 N <- nrow(tonorm_eset)  # number of genes/features
 # Scale each column (sample) using pooled/population standard deviation
-norm_eset <- scale(tonorm_eset, scale = apply(tonorm_eset, 2, sd) * sqrt(N - 1 / N))
-box3 <- boxplot(norm_eset, main = "Normalized GSVA scores")
-
+norm_eset <- scale(tonorm_eset, scale = apply(tonorm_eset, 2, sd) * sqrt((N - 1) / N))
 # Update the ExpressionSet with normalized values
 gsva_result_clinical.n <- gsva_result_clinical
 exprs(gsva_result_clinical.n) <- norm_eset
@@ -176,8 +168,8 @@ write.csv(tt, out_fname, row.names = TRUE)
 # Prepare volcano plot annotations
 tt$logP <- -log10(tt$P.Value)
 tt$color_group <- "NS"
-tt$color_group[tt$logFC > 0.02 & tt$logP > 1.3]  <- "Up"
-tt$color_group[tt$logFC < -0.02 & tt$logP > 1.3] <- "Down"
+tt$color_group[tt$logFC > 0 & tt$logP > 1.3]  <- "Up"
+tt$color_group[tt$logFC < 0 & tt$logP > 1.3] <- "Down"
 tt$color_group <- factor(tt$color_group, levels = c("Down", "NS", "Up"))
 
 # Define publication-friendly color scheme
@@ -191,10 +183,9 @@ volcano_colors <- c(
 volcano_plot <- ggplot(tt, aes(x = logFC, y = logP, color = color_group)) +
   geom_point(alpha = 0.4, size = 2) +
   scale_color_manual(values = volcano_colors) +
-  geom_vline(xintercept = c(-0.02, 0.02), color = "gray50", linetype = "dashed") +
   geom_hline(yintercept = 1.3, color = "gray50", linetype = "dashed") +
   labs(
-    x = "GSVA enrichment score difference",
+    x = "Differential VMPA activity\n(recurrent vs primary)",
     y = expression(-log[10]~~Raw~P-value),
     color = ""
   ) +

@@ -1,12 +1,6 @@
 #!/usr/bin/env Rscript
 
 # Packages
-if (!require(drc))       install.packages("drc")
-if (!require(dplyr))     install.packages("dplyr")
-if (!require(gridExtra)) install.packages("gridExtra")
-if (!require(ggplotify)) install.packages("ggplotify")
-if (!require(here))      install.packages("here")
-
 library(drc)
 library(dplyr)
 library(gridExtra)

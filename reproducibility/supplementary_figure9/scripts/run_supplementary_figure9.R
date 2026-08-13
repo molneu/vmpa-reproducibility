@@ -33,3 +33,25 @@ setwd(repo_root)
 
 source(file.path(figure6_dir, "scripts", "wb_correlation", "analyze_original_wb_mtor_s6_across_cell_lines.R"))
 source(file.path(figure6_dir, "scripts", "wb_correlation", "make_four_mtor_validation_scatterplots.R"))
+
+selected_dir <- file.path(
+  figure6_dir, "results", "wb_correlation",
+  "original_wb_labels_mtor_s6_n6_n12", "SELECTED_FINAL_PLOTS"
+)
+plot_dir <- file.path(repo_root, "reproducibility", "supplementary_figure9", "plots")
+dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
+files <- c(
+  "BN118_MTOR_vs_pMTOR_Ponceau_50mm.pdf",
+  "BN118_MTOR_vs_pS6_Ponceau_50mm.pdf",
+  "BN118_RPS6.1_vs_pS6_Ponceau_50mm.pdf",
+  "BN91_MTOR_vs_pMTOR_Ponceau_50mm.pdf",
+  "BN91_MTOR_vs_pS6_Ponceau_50mm.pdf",
+  "BN91_RPS6.1_vs_pS6_Ponceau_50mm.pdf",
+  "supplementary_six_regression_results.csv"
+)
+copied <- file.copy(
+  file.path(selected_dir, files),
+  file.path(plot_dir, files),
+  overwrite = TRUE
+)
+if (!all(copied)) stop("Failed to update Supplementary Figure 9 outputs.", call. = FALSE)
