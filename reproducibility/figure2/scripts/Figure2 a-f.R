@@ -119,7 +119,7 @@ env_preprocess_sc <- function(seurat_obj, s_genes, g2m_genes) {
 env_build_null_model <- function(expr_mat,
                                  genes,
                                  n_sets     = 1000,
-                                 set_size   = 200,
+                                 set_size   = 250,
                                  cache_file = "AUCell_null_model.rds",
                                  seed = 1) {
   if (file.exists(cache_file)) {
