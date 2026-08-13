@@ -22,12 +22,15 @@ library(here)
 library(future)
 library(furrr)
 
+here::i_am("reproducibility/supplementary_figure3/scripts/supplementary_figure3_overlap_rate.R")
+
 # compass_gsc() function
 source(here("reproducibility", "figure3", "scripts", "preprocessing", "5_compass_gsc_function.R"))
 
 # Directories
 data_dir    <- here("reproducibility", "figure3", "data", "subsets")
-results_dir <- here("reproducibility", "figure3", "results")
+results_dir <- here("reproducibility", "supplementary_figure3", "results")
+dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Parameters
 contexts <- c("glioma","melanoma","nsclc","ovarian", "crc","breast","prostate","pdac")
@@ -106,13 +109,12 @@ p <- ggplot(boxplot_df, aes(x = factor(Size), fill = Context)) +
 
 p
 # Save
-ggsave(file.path(results_dir, "Suppl. Fig2_overlap_gene_sets_boxplots.pdf"),
+ggsave(file.path(results_dir, "Supplementary_Figure_3_overlap_gene_sets_boxplots.pdf"),
        p, width = 10, height = 6, bg = "white")
 
-# Save source data for Supplementary Figure 2
+# Save source data for Supplementary Figure 3
 write.csv(
   boxplot_df,
-  file = file.path(results_dir, "Source Data_Suppl. Fig 2_overlap_gene_sets_boxplots.csv"),
+  file = file.path(results_dir, "Source_Data_Supplementary_Figure_3_overlap_gene_sets_boxplots.csv"),
   row.names = FALSE
 )
-

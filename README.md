@@ -148,10 +148,28 @@ bash run_supplementary_figure2_foundation_models.sh \
 
 See `reproducibility/supplementary_figure2/scripts/foundation_models/README.md` for the required Python environments and model inputs.
 
+Supplementary Figure 3:
+
+```bash
+Rscript reproducibility/supplementary_figure3/scripts/supplementary_figure3_overlap_rate.R
+```
+
 Supplementary Figure 5:
 
 ```bash
 Rscript reproducibility/supplementary_figure5/paper_context_only_effect_threshold_figures.R
+```
+
+Supplementary Figure 6:
+
+```bash
+Rscript reproducibility/supplementary_figure6/scripts/supplementary_figure6_function_annotation.R
+```
+
+Supplementary Figure 7 (run after Figure 5):
+
+```bash
+Rscript reproducibility/supplementary_figure7/scripts/supplementary_figure7_random_forest_validation.R
 ```
 
 Supplementary Figure 9:

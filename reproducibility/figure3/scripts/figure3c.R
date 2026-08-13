@@ -29,9 +29,6 @@ df2 <- read.csv(df2_path)
 plot_data <- df %>%
   dplyr::select(Function, Compass)
 
-plot_data2 <- df %>%
-  dplyr::select(Function, Collectri)
-
 plot_data3 <- df2 %>%
   dplyr::select(Subcellular.localization, Compass)
 
@@ -57,16 +54,6 @@ p1 <- plot_data %>%
   e_tooltip(trigger = 'item') %>%
   e_show_loading()
 
-#suppl figure (compass collectri intersected)
-p2 <- plot_data2 %>%
-  e_charts(Function, renderer = "svg") %>%
-  e_pie(Collectri, radius = c("30%", "50%")) %>%  # Smaller hole by decreasing inner radius
-  e_labels(show = TRUE, position = 'outside', formatter = "{b}", fontSize = 20) %>%  # Show only the function names
-  e_legend(show = FALSE) %>%  # Remove the legend
-  e_color(custom_colors2) %>%  # Apply custom colors
-  e_tooltip(trigger = 'item') %>%
-  e_show_loading()
-
 #figure 3c bottom (localization)
 p3 <- plot_data3 %>%
   e_charts(Subcellular.localization, renderer = "svg") %>%
@@ -80,18 +67,11 @@ p3 <- plot_data3 %>%
 # ====== STEP 3: Save ======
 
 html_file1 <- file.path(fig3_results_dir, "Fig 3c_donut_function.html")
-html_file2 <- file.path(fig3_results_dir, "Suppl. Fig 3_donut_compass_collectri_intersection.html")
 html_file3 <- file.path(fig3_results_dir, "Fig 3c_donut_localization.html")
 
 htmlwidgets::saveWidget(
   widget      = p1,
   file        = html_file1,
-  selfcontained = TRUE   # embed dependencies into one file
-)
-
-htmlwidgets::saveWidget(
-  widget      = p2,
-  file        = html_file2,
   selfcontained = TRUE   # embed dependencies into one file
 )
 

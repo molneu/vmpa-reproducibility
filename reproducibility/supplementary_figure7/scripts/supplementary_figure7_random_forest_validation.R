@@ -5,6 +5,8 @@ library(caret)
 library(ggplot2)
 
 results_dir <- here("reproducibility", "figure5", "results")
+supp_results_dir <- here("reproducibility", "supplementary_figure7", "results")
+dir.create(supp_results_dir, recursive = TRUE, showWarnings = FALSE)
 
 gsva_results_list <- readRDS(file.path(results_dir, "STEP 4 output_gsva_results_list.rds"))
 
@@ -116,9 +118,8 @@ m3c_results_list.1 <- combined_m3c_results[[1]]
 
 # Extract cluster assignments
 ordered_annot <- m3c_results_list.1[["realdataresults"]][[11]][["ordered_annotation"]]
-table(cluster_labels)
-
 cluster_labels <- ordered_annot$consensuscluster
+table(cluster_labels)
 
 # Exclude clusters 4 and 7
 clusters_to_remove <- c("4", "7")
@@ -183,7 +184,7 @@ rfplot <- ggplot(all_results, aes(x = Cluster, y = F1_Score, fill = Type)) +
   )
 
 ggplot2::ggsave(
-  filename = here("reproducibility","figure5","results","Suppl. Fig., Random Forest validation.pdf"),
+  filename = file.path(supp_results_dir, "Supplementary_Figure_7_random_forest_validation.pdf"),
   plot = rfplot,
   width = 5, height = 4, dpi = 300, device = "pdf"
 )
