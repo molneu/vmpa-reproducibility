@@ -172,6 +172,8 @@ Supplementary Figure 6:
 Rscript reproducibility/supplementary_figure6/supplementary_figure6_function_annotation.R
 ```
 
+Pandoc is required to save the self-contained HTML output.
+
 Supplementary Figure 7 (run after Figure 5):
 
 ```bash

@@ -17,7 +17,7 @@ compass250_gsva_scores <- gsva_results_list[["log_1.5"]]
 N <- nrow(compass250_gsva_scores)
 compass250_gsva_scores_bianca <- scale(
   compass250_gsva_scores,
-  scale = apply(compass250_gsva_scores, 2, sd) * sqrt(N - 1 / N)
+  scale = apply(compass250_gsva_scores, 2, sd) * sqrt((N - 1) / N)
 )
 
 # --- Step B: Remove highly correlated rows ---

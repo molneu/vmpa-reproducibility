@@ -11852,6 +11852,11 @@
       "Maintainer": "Terry M Therneau <therneau.terry@mayo.edu>",
       "Repository": "CRAN"
     },
+    "svglite": {
+      "Package": "svglite",
+      "Version": "2.2.2",
+      "Source": "Repository"
+    },
     "sys": {
       "Package": "sys",
       "Version": "3.4.3",
