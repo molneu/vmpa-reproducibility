@@ -3015,6 +3015,12 @@
       "NeedsCompilation": "no",
       "Maintainer": "Bioconductor Package Maintainer <maintainer@bioconductor.org>"
     },
+    "aracne.networks": {
+      "Package": "aracne.networks",
+      "Version": "1.32.0",
+      "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.20"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.1",
@@ -12482,6 +12488,12 @@
       "Author": "Hadley Wickham [aut], Lionel Henry [aut], Davis Vaughan [aut, cre], data.table team [cph] (Radix sort based on data.table's forder() and their contribution to R's order()), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Davis Vaughan <davis@posit.co>",
       "Repository": "CRAN"
+    },
+    "viper": {
+      "Package": "viper",
+      "Version": "1.40.0",
+      "Source": "Bioconductor",
+      "Repository": "Bioconductor 3.20"
     },
     "viridisLite": {
       "Package": "viridisLite",
