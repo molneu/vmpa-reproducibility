@@ -22,7 +22,7 @@ library(here)
 library(future)
 library(furrr)
 
-here::i_am("reproducibility/supplementary_figure3/scripts/supplementary_figure3_overlap_rate.R")
+here::i_am("reproducibility/supplementary_figure3/supplementary_figure3_overlap_rate.R")
 
 # compass_gsc() function
 source(here("reproducibility", "figure3", "scripts", "preprocessing", "5_compass_gsc_function.R"))

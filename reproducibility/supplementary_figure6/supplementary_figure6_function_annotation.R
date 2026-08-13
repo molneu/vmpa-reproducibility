@@ -3,7 +3,7 @@ library(dplyr)
 library(htmlwidgets)
 library(here)
 
-here::i_am("reproducibility/supplementary_figure6/scripts/supplementary_figure6_function_annotation.R")
+here::i_am("reproducibility/supplementary_figure6/supplementary_figure6_function_annotation.R")
 
 data_path <- here("reproducibility", "figure3", "data", "annotation_protein function.csv")
 results_dir <- here("reproducibility", "supplementary_figure6", "results")

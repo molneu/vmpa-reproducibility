@@ -136,6 +136,12 @@ Rscript reproducibility/figure6/scripts/caspase_dapi_response/generate_main_2x2_
 
 The `run_figure6h_i_j.R` wrapper generates the VMPA scores and runs the western-blot correlation, target-selection, Figure 6i plotting, and apoptosis-pathway scripts in the required order.
 
+Supplementary Figure 1:
+
+```bash
+Rscript reproducibility/supplementary_figure1/supplementary_figure1.R
+```
+
 Supplementary Figure 2:
 
 ```bash
@@ -151,7 +157,7 @@ See `reproducibility/supplementary_figure2/scripts/foundation_models/README.md` 
 Supplementary Figure 3:
 
 ```bash
-Rscript reproducibility/supplementary_figure3/scripts/supplementary_figure3_overlap_rate.R
+Rscript reproducibility/supplementary_figure3/supplementary_figure3_overlap_rate.R
 ```
 
 Supplementary Figure 5:
@@ -163,13 +169,13 @@ Rscript reproducibility/supplementary_figure5/paper_context_only_effect_threshol
 Supplementary Figure 6:
 
 ```bash
-Rscript reproducibility/supplementary_figure6/scripts/supplementary_figure6_function_annotation.R
+Rscript reproducibility/supplementary_figure6/supplementary_figure6_function_annotation.R
 ```
 
 Supplementary Figure 7 (run after Figure 5):
 
 ```bash
-Rscript reproducibility/supplementary_figure7/scripts/supplementary_figure7_random_forest_validation.R
+Rscript reproducibility/supplementary_figure7/supplementary_figure7_random_forest_validation.R
 ```
 
 Supplementary Figure 9:

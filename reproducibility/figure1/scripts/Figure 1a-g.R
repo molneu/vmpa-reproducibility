@@ -110,30 +110,6 @@ lowest_is_akt1   <- apply(akt1_sigs, 2, function(col)
 akt1_sigs_TOP    <- akt1_sigs[, lowest_is_akt1]
 message("Selected signatures with AKT1 lowest, n=", ncol(akt1_sigs_TOP))
 
-# ====== STEP 6: Plot Bottom 5 Genes per Signature =====
-df_long  <- akt1_sigs_TOP %>%
-  as_tibble(rownames="gene") %>%
-  pivot_longer(-gene, names_to="sig", values_to="expr")
-
-df_bot5  <- df_long %>%
-  group_by(sig) %>%
-  slice_min(expr, n=5, with_ties=FALSE) %>%
-  ungroup() %>%
-  mutate(is_AKT1 = ifelse(gene=="AKT1","AKT1","Other"))
-
-p1 <- ggplot(df_bot5, aes(x=reorder(gene,expr), y=expr, fill=is_AKT1)) +
-  geom_col() +
-  facet_wrap(~sig, scales="free_x") +
-  scale_fill_manual(values=c(AKT1="red",Other="grey")) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle=45, hjust=1, size=6)) +
-  labs(title="Bottom 5 Genes per AKT1 Signature", x="Gene", y="Expression")
-
-ggsave(
-  file.path(results_dir,"Suppl. Fig., Selected_AKT1_signatures.png"),
-  p1, width=8, height=6, bg="white"
-)
-
 # ====== STEP 7: Prepare Gene Sets =====
 msig      <- msigdbr(species="Homo sapiens")
 akt1_sets <- subset(msig, grepl("AKT1", gs_name))
@@ -773,4 +749,3 @@ ggsave(
   device   = "pdf",
   bg       = "white"
 )
-
