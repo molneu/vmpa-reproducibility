@@ -1,6 +1,6 @@
-# Reproducibility repository for the VMPA manuscript
+# VMPA manuscript reproducibility
 
-This repository contains the scripts needed to reproduce the main figures from the VMPA manuscript.
+Code and workflows for reproducing the analyses and figures in the VMPA manuscript.
 
 Scripts write figures and tables to the corresponding `results/` folders.
 
