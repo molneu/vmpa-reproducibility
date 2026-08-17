@@ -261,14 +261,6 @@ make_panel <- function(definition, compact = FALSE, compact_mm = 14) {
     data = plot_data
   )
   panel_model_summary <- summary(panel_model)
-  panel_slope_t <- panel_model_summary$coefficients[
-    "vmpa_centered", "t value"
-  ]
-  panel_one_sided_p <- pt(
-    panel_slope_t,
-    df.residual(panel_model),
-    lower.tail = FALSE
-  )
   if (nrow(main_regression) == 1L) {
     annotation <- ""
     display_title <- paste0(
@@ -283,7 +275,7 @@ make_panel <- function(definition, compact = FALSE, compact_mm = 14) {
       "R2=",
       formatC(panel_model_summary$r.squared, format = "f", digits = 2),
       "\np=",
-      format_p(panel_one_sided_p)
+      format_p(panel_stats$blocked_exact_permutation_p)
     )
     display_title <- definition$title
   }
