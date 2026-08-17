@@ -491,6 +491,101 @@ gf <- fgsea_res %>% left_join(sig_info, by = "sig_id")
 gf_supplementary <- gf %>%
   filter(tolower(cmap_name) %in% eligible_drugs)
 
+glioma_reference <- readRDS(
+  here("reproducibility", "figure3", "data", "subsets", "glioma_subset.rds")
+)
+selected_target_signatures <- as.data.frame(glioma_reference@cdesc) %>%
+  transmute(
+    Target = cmap_name,
+    signature_id = id,
+    confidence = cps_conf_total,
+    tas = tas
+  ) %>%
+  filter(!is.na(Target), !is.na(signature_id)) %>%
+  arrange(Target, desc(confidence), desc(tas), signature_id) %>%
+  group_by(Target) %>%
+  slice(1) %>%
+  ungroup() %>%
+  mutate(pathway = paste0(signature_id, "_c", confidence))
+
+eligible_target_pairs <- drug_df %>%
+  transmute(
+    drug_key = tolower(Drug),
+    Drug,
+    Target,
+    Mode_of_action
+  ) %>%
+  distinct() %>%
+  inner_join(selected_target_signatures, by = "Target")
+
+drug_target_condition_results <- gf_supplementary %>%
+  mutate(
+    drug_key = tolower(cmap_name),
+    dose_uM = as.numeric(str_extract(pert_idose, "[0-9.]+"))
+  ) %>%
+  inner_join(
+    eligible_target_pairs %>%
+      select(
+        drug_key,
+        Drug,
+        Target,
+        Mode_of_action,
+        pathway,
+        confidence,
+        tas
+      ),
+    by = c("drug_key", "pathway")
+  ) %>%
+  mutate(recovered = NES < 0 & padj < 0.05) %>%
+  arrange(Drug, Target, dose_uM, sig_id)
+
+drug_target_recovery_summary <- drug_target_condition_results %>%
+  group_by(Drug, Target, Mode_of_action, pathway, confidence, tas) %>%
+  summarise(
+    n_profiles = n(),
+    n_concentrations = n_distinct(dose_uM),
+    concentrations_uM = paste(sort(unique(dose_uM)), collapse = ", "),
+    target_recovered = any(recovered, na.rm = TRUE),
+    recovered_concentrations_uM = paste(
+      sort(unique(dose_uM[recovered])),
+      collapse = ", "
+    ),
+    minimum_NES = min(NES, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+compound_recovery_summary <- drug_target_recovery_summary %>%
+  group_by(Drug) %>%
+  summarise(
+    n_intended_targets = n(),
+    n_targets_recovered = sum(target_recovered),
+    compound_recovered = any(target_recovered),
+    .groups = "drop"
+  ) %>%
+  arrange(Drug)
+
+write.csv(
+  drug_target_condition_results,
+  file.path(results_dir, "Figure4_drug_target_condition_results.csv"),
+  row.names = FALSE
+)
+write.csv(
+  drug_target_recovery_summary,
+  file.path(results_dir, "Figure4_drug_target_recovery_summary.csv"),
+  row.names = FALSE
+)
+write.csv(
+  compound_recovery_summary,
+  file.path(results_dir, "Figure4_compound_recovery_summary.csv"),
+  row.names = FALSE
+)
+message(
+  "Recovered compounds: ",
+  sum(compound_recovery_summary$compound_recovered),
+  "/",
+  nrow(compound_recovery_summary)
+)
+
 # Select specific drugs and targets of interest for plotting
 sel_drugs   <- c("palbociclib", "thioridazine", "afatinib", "simvastatin",
                  "equilin", "AZD-8055", "olaparib", "BI-2536", "daunorubicin")
