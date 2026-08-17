@@ -536,21 +536,51 @@ drug_target_condition_results <- gf_supplementary %>%
       ),
     by = c("drug_key", "pathway")
   ) %>%
-  mutate(recovered = NES < 0 & padj < 0.05) %>%
+  mutate(
+    mode_normalized = tolower(str_squish(Mode_of_action)),
+    expected_direction = case_when(
+      mode_normalized %in% c("inhibitor", "antagonist") ~ "negative",
+      mode_normalized %in% c(
+        "agonist",
+        "positive allosteric modulator",
+        "inducer",
+        "stabilizer"
+      ) ~ "positive",
+      TRUE ~ NA_character_
+    ),
+    recovered = case_when(
+      expected_direction == "negative" ~ NES < 0 & padj < 0.05,
+      expected_direction == "positive" ~ NES > 0 & padj < 0.05,
+      TRUE ~ NA
+    )
+  ) %>%
   arrange(Drug, Target, dose_uM, sig_id)
 
 drug_target_recovery_summary <- drug_target_condition_results %>%
-  group_by(Drug, Target, Mode_of_action, pathway, confidence, tas) %>%
+  group_by(
+    Drug,
+    Target,
+    Mode_of_action,
+    expected_direction,
+    pathway,
+    confidence,
+    tas
+  ) %>%
   summarise(
     n_profiles = n(),
     n_concentrations = n_distinct(dose_uM),
     concentrations_uM = paste(sort(unique(dose_uM)), collapse = ", "),
-    target_recovered = any(recovered, na.rm = TRUE),
+    target_recovered = if (all(is.na(recovered))) {
+      NA
+    } else {
+      any(recovered, na.rm = TRUE)
+    },
     recovered_concentrations_uM = paste(
-      sort(unique(dose_uM[recovered])),
+      sort(unique(dose_uM[which(recovered %in% TRUE)])),
       collapse = ", "
     ),
     minimum_NES = min(NES, na.rm = TRUE),
+    maximum_NES = max(NES, na.rm = TRUE),
     .groups = "drop"
   )
 
@@ -558,8 +588,9 @@ compound_recovery_summary <- drug_target_recovery_summary %>%
   group_by(Drug) %>%
   summarise(
     n_intended_targets = n(),
-    n_targets_recovered = sum(target_recovered),
-    compound_recovered = any(target_recovered),
+    n_evaluable_targets = sum(!is.na(target_recovered)),
+    n_targets_recovered = sum(target_recovered, na.rm = TRUE),
+    compound_recovered = any(target_recovered, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   arrange(Drug)
@@ -581,7 +612,7 @@ write.csv(
 )
 message(
   "Recovered compounds: ",
-  sum(compound_recovery_summary$compound_recovered),
+  sum(compound_recovery_summary$compound_recovered, na.rm = TRUE),
   "/",
   nrow(compound_recovery_summary)
 )
