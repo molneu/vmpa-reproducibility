@@ -31,12 +31,10 @@ All commands below should be run from the folder containing this `README.md` fil
 
 ## Step 2: Download and extract the compressed data from Figshare
 
-Download this file from Figshare:
-
-https://figshare.com/s/f5cc8be3979e6b03b6a5
+Download the [VMPA manuscript reproducibility input files](https://doi.org/10.6084/m9.figshare.33089166) from Figshare:
 
 ```text
-vmpa_reproducibility_input_data_v1.0.tar
+vmpa_reproducibility_input_data_v1.1.tar
 ```
 Place the downloaded file into the repository root:
 
@@ -44,7 +42,7 @@ Place the downloaded file into the repository root:
 vmpa-reproducibility/
   README.md
   renv.lock
-  vmpa_reproducibility_input_data_v1.0.tar
+  vmpa_reproducibility_input_data_v1.1.tar
   reproducibility/
 ```
 
@@ -53,7 +51,7 @@ Then extract:
 e.g.:
 
 ```bash
-tar -xf vmpa_reproducibility_input_data_v1.0.tar
+tar -xf vmpa_reproducibility_input_data_v1.1.tar
 ```
 
 ## Step 3: Restore the R Environment
